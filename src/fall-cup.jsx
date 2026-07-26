@@ -1564,11 +1564,11 @@ function InfoTab() {
       <div style={{ color:C.accent, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:12 }}>2026 FALL CUP</div>
       <div style={{ background:C.card, borderRadius:12, overflow:"hidden", border:`1px solid ${C.accentBorder}`, marginBottom:16, boxShadow:"0 1px 4px rgba(0,0,0,0.06)" }}>
         <div style={{ padding:"12px 14px", borderBottom:`1px solid ${C.border}`, background:"#eaf7f1" }}>
-          <div style={{ color:C.accent, fontSize:12, fontWeight:700 }}>Wintergreen Resort · Nelson County, VA</div>
+          <div style={{ color:C.accent, fontSize:12, fontWeight:700 }}>Wintergreen Resort · Sep 18–19, 2026</div>
         </div>
         {[
-          { day:"Friday, Sep 19", course:"Devil's Knob · Wintergreen", details:"4 × 9-hole rounds · ~8:00 AM start", note:"All 16 players play all 4 formats. Pairings & formats TBD." },
-          { day:"Saturday, Sep 20", course:"Stony Creek (Mon/Sha) · Wintergreen", details:"2 × 9-hole rounds · ~9:00 AM start", note:"Course pending final decision. Formats & pairings TBD." },
+          { day:"Friday, Sep 18", course:"Devil's Knob · Wintergreen", details:"4 sessions · 36 holes · ~8:00 AM start", note:"Texas Scramble, Alternate Shot, Captain's Choice, Mod. Alternate Shot. Pairings set Thursday night." },
+          { day:"Saturday, Sep 19", course:"Stony Creek · Wintergreen", details:"2 sessions · 18 holes · ~9:00 AM start", note:"Singles. Final pairings TBD." },
         ].map((d,i) => (
           <div key={i} style={{ padding:"14px", borderBottom:i===0?`1px solid ${C.border}`:"none" }}>
             <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
@@ -1582,6 +1582,51 @@ function InfoTab() {
           </div>
         ))}
       </div>
+      {/* Logistics */}
+      <div style={{ color:C.muted, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:10, marginTop:4 }}>WEEKEND LOGISTICS</div>
+      {[
+        { label:"Thu Sep 17", icon:"🏠", title:"Arrival & Check-In", detail:"House check-in at 4:00 PM. 16-person rental near Devil's Knob." },
+        { label:"Thu Night",  icon:"🍺", title:"Kick-Off",           detail:"Thursday night event at a local brewery (Devils Backbone, Blue Mountain, etc. — TBD). Pairings reveal and timeline discussion." },
+        { label:"Fri Sep 18", icon:"⛳", title:"Devil's Knob — Day 1", detail:"36 holes starting ~8:00 AM. 4 team format sessions. Meals at the house/course." },
+        { label:"Fri Night",  icon:"🏠", title:"Night 2 at the House", detail:"Dinner and festivities up on the mountain." },
+        { label:"Sat Sep 19", icon:"⛳", title:"Stony Creek — Day 2", detail:"18 holes starting ~9:00 AM. Singles sessions. Cup concludes mid-day." },
+        { label:"Sat Night",  icon:"🎉", title:"Post-Cup Celebration", detail:"Celebrating the Cup winner and Francel's 50th birthday! House reserved Saturday night." },
+        { label:"Sun Sep 20", icon:"🚗", title:"Check-Out",           detail:"Check-out by 11:00 AM. Optional extra golf available Thu/Sat/Sun for the sickos." },
+      ].map((item,i,arr) => (
+        <div key={i} style={{ display:"flex", gap:12, padding:"12px 14px",
+          background:C.card, borderRadius: i===0?"12px 12px 0 0":i===arr.length-1?"0 0 12px 12px":"0",
+          borderBottom: i<arr.length-1?`1px solid ${C.border}`:"none",
+          border:`1px solid ${C.border}`, marginBottom: i===arr.length-1?0:-1 }}>
+          <div style={{ fontSize:20, flexShrink:0, marginTop:1 }}>{item.icon}</div>
+          <div style={{ flex:1 }}>
+            <div style={{ display:"flex", gap:8, alignItems:"baseline", marginBottom:2 }}>
+              <span style={{ color:C.accent, fontSize:10, fontWeight:700, letterSpacing:1 }}>{item.label}</span>
+              <span style={{ color:C.text, fontSize:13, fontWeight:700 }}>{item.title}</span>
+            </div>
+            <div style={{ color:C.muted, fontSize:12, lineHeight:1.5 }}>{item.detail}</div>
+          </div>
+        </div>
+      ))}
+
+      {/* Costs */}
+      <div style={{ color:C.muted, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:10, marginTop:16 }}>COSTS</div>
+      <div style={{ background:C.card, borderRadius:12, border:`1px solid ${C.border}`, overflow:"hidden", marginBottom:16 }}>
+        {[
+          { item:"House (Thu & Fri nights)", cost:"~$100/person", note:"Collected via Venmo that weekend. Sat night add-on is minimal." },
+          { item:"Golf (all 3 rounds)",      cost:"~$200/person", note:"Pay at the course directly." },
+          { item:"Meals & drinks",           cost:"TBD",          note:"Community goods + sign-up sheet coming in September." },
+        ].map((row,i,arr) => (
+          <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start",
+            padding:"12px 14px", borderBottom:i<arr.length-1?`1px solid ${C.border}`:"none" }}>
+            <div style={{ flex:1 }}>
+              <div style={{ color:C.text, fontSize:13, fontWeight:600 }}>{row.item}</div>
+              <div style={{ color:C.muted, fontSize:11, marginTop:2 }}>{row.note}</div>
+            </div>
+            <div style={{ color:C.accent, fontSize:13, fontWeight:800, marginLeft:12, flexShrink:0 }}>{row.cost}</div>
+          </div>
+        ))}
+      </div>
+
       <div style={{ color:C.muted, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:10, marginTop:8 }}>2026 COURSES &amp; SCORECARDS</div>
 
       {[
@@ -2892,7 +2937,7 @@ function Header({ totals, year, darkMode, onToggleDark, expanded, onToggleExpand
 
 // ── APP ───────────────────────────────────────────────────────────────────────
 const SCORE_PIN = "2026";
-const EVENT_DATE = new Date("2026-09-19T08:00:00"); // Friday morning tee time
+const EVENT_DATE = new Date("2026-09-18T08:00:00"); // Friday morning tee time
 
 function CountdownUnit({ value, label }) {
   return (
