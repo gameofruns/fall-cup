@@ -3016,6 +3016,12 @@ export default function FallCupApp() {
   const [matches2026, setMatches2026] = useState(MATCHES_2026);
   const [tab, setTab] = useState("scores");
   const [dayFilter, setDayFilter] = useState("All");
+  const [closedSessions, setClosedSessions] = useState(new Set());
+  const toggleSession = (key) => setClosedSessions(prev => {
+    const next = new Set(prev);
+    if (next.has(key)) next.delete(key); else next.add(key);
+    return next;
+  });
   const [scoringMatch, setScoringMatch] = useState(null);
   const [showHistoryMenu, setShowHistoryMenu] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
