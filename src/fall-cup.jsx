@@ -3019,26 +3019,6 @@ export default function FallCupApp() {
   const [matches2026, setMatches2026] = useState(MATCHES_2026);
   const [tab, setTab] = useState("scores");
   const [dayFilter, setDayFilter] = useState("All");
-  // Determine which session is currently active
-  const SESSION_ORDER = ["Session 1","Session 2","Session 3","Session 4","Session 5","Session 6"];
-  const getActiveSession = (matches) => {
-    for (const s of SESSION_ORDER) {
-      const sMatches = matches.filter(m => m.session === s);
-      if (sMatches.length === 0) continue;
-      const done = sMatches.every(m => m.holes.every(h => h !== null));
-      if (!done) return s; // first incomplete session
-    }
-    return SESSION_ORDER[SESSION_ORDER.length - 1]; // all done, keep last open
-  };
-  const activeSession = getActiveSession(activeMatches);
-  const [manualOverrides, setManualOverrides] = useState({});
-  const isSessionOpen = (key) => {
-    if (key in manualOverrides) return manualOverrides[key];
-    return key === activeSession;
-  };
-  const toggleSession = (key) => setManualOverrides(prev => ({
-    ...prev, [key]: !isSessionOpen(key)
-  }));
   const [scoringMatch, setScoringMatch] = useState(null);
   const [showHistoryMenu, setShowHistoryMenu] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
@@ -3049,6 +3029,21 @@ export default function FallCupApp() {
   // 2026 is always the primary active year for scoring
   const activeMatches = matches2026;
   const setActiveMatches = setMatches2026;
+
+  // Smart session collapse — first incomplete session is auto-expanded
+  const SESSION_ORDER = ["Session 1","Session 2","Session 3","Session 4","Session 5","Session 6"];
+  const getActiveSession = () => {
+    for (const s of SESSION_ORDER) {
+      const sMatches = activeMatches.filter(m => m.session === s);
+      if (sMatches.length === 0) continue;
+      if (!sMatches.every(m => m.holes.every(h => h !== null))) return s;
+    }
+    return SESSION_ORDER[SESSION_ORDER.length - 1];
+  };
+  const activeSession = getActiveSession();
+  const [manualOverrides, setManualOverrides] = useState({});
+  const isSessionOpen = (key) => key in manualOverrides ? manualOverrides[key] : key === activeSession;
+  const toggleSession = (key) => setManualOverrides(prev => ({ ...prev, [key]: !isSessionOpen(key) }));
 
   // liveHoles: while a scorer is open, track hole-by-hole edits so header updates in real time
   const [liveHoles, setLiveHoles] = useState(null); // { matchId, holes }
