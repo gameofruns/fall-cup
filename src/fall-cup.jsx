@@ -2898,7 +2898,7 @@ function CountdownUnit({ value, label }) {
   return (
     <div style={{ textAlign:"center", minWidth:64 }}>
       <div style={{ fontSize:52, fontWeight:900, lineHeight:1, color:"#fff",
-        fontVariantNumeric:"tabular-nums", letterSpacing:-2 }}>
+        fontVariantNumeric:"tabular-nums", letterSpacing:-2, fontFamily:"system-ui, sans-serif" }}>
         {String(value).padStart(2,"0")}
       </div>
       <div style={{ fontSize:10, fontWeight:700, letterSpacing:2, color:"rgba(255,255,255,0.45)",
@@ -2936,18 +2936,18 @@ function Countdown({ darkMode, onEnter }) {
 
   return (
     <div style={{
-      minHeight:"100vh", position:"relative", overflow:"hidden",
+      height:"100vh", position:"relative", overflow:"hidden",
       background:"#faf3df",
       display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-      padding:"20px 28px 40px",
+      padding:"0 28px",
     }}>
 
 
 
       {/* Logo — large, pushed toward top, edges may crop */}
       <img src={LOGO_DATA_URI} alt="Fall Cup 2026" style={{
-        width:420, height:420,
-        marginBottom:-40, marginTop:-40, position:"relative", zIndex:1
+        width:"min(420px, 80vw)", height:"min(420px, 80vw)",
+        marginBottom:-40, marginTop:-20, position:"relative", zIndex:1
       }} />
 
       {/* Countdown — overlaps logo base, dark teal pill */}
@@ -3100,18 +3100,36 @@ export default function FallCupApp() {
             </button>
           </div>
 
-          {Object.entries(grouped).map(([group,gms]) => (
-            <div key={group} style={{ padding:"0 16px 4px" }}>
-              <div style={{ color:C.muted, fontSize:11, fontWeight:700, letterSpacing:1.5, padding:"10px 0 8px", textTransform:"uppercase" }}>
-                {SESSION_LABELS[group] || group}
+          {Object.entries(grouped).map(([group,gms]) => {
+            const isOpen = !closedSessions.has(group);
+            const allDone = gms.every(m => m.holes.every(h => h !== null));
+            const wPts = gms.reduce((s,m) => s + m.holes.reduce((a,h) => a + (h==="world"?1:h==="halved"?.5:0), 0), 0);
+            const rPts = gms.reduce((s,m) => s + m.holes.reduce((a,h) => a + (h==="richmond"?1:h==="halved"?.5:0), 0), 0);
+            return (
+              <div key={group} style={{ padding:"0 16px 4px" }}>
+                <button onClick={() => toggleSession(group)} style={{
+                  width:"100%", background:"none", border:"none", cursor:"pointer",
+                  display:"flex", alignItems:"center", justifyContent:"space-between",
+                  padding:"10px 0 8px",
+                }}>
+                  <span style={{ color:C.muted, fontSize:11, fontWeight:700, letterSpacing:1.5, textTransform:"uppercase" }}>
+                    {SESSION_LABELS[group] || group}
+                  </span>
+                  <span style={{ display:"flex", alignItems:"center", gap:8 }}>
+                    {allDone && <span style={{ fontSize:9, fontWeight:700, color:C.worldGold, background:C.worldBg, border:`1px solid ${C.worldBorder}`, borderRadius:4, padding:"1px 6px", letterSpacing:1 }}>DONE</span>}
+                    <span style={{ color:C.muted, fontSize:12, transform: isOpen?"rotate(180deg)":"none", transition:"transform 0.2s", display:"inline-block" }}>▾</span>
+                  </span>
+                </button>
+                {isOpen && (
+                  <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                    {gms.map(m => <MatchCard key={m.id} match={m} onOpenScorer={unlocked
+                        ? (m) => { setScoringMatch(m); setLiveHoles({ matchId: m.id, holes: [...m.holes] }); }
+                        : null} unlocked={unlocked} />)}
+                  </div>
+                )}
               </div>
-              <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                {gms.map(m => <MatchCard key={m.id} match={m} onOpenScorer={unlocked
-                    ? (m) => { setScoringMatch(m); setLiveHoles({ matchId: m.id, holes: [...m.holes] }); }
-                    : null} unlocked={unlocked} />)}
-              </div>
-            </div>
-          ))}
+            );
+          })}
 
           <div style={{ margin:"16px 16px 8px", padding:"14px 16px", background:C.card, borderRadius:12, border:`1px solid ${totals.world>totals.richmond?C.worldBorder:totals.richmond>totals.world?C.richBorder:C.border}`, textAlign:"center", boxShadow:"0 1px 4px rgba(0,0,0,0.06)" }}>
             <div style={{ color:C.muted, fontSize:11, marginBottom:3 }}>Tournament Standing</div>
