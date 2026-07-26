@@ -2949,14 +2949,14 @@ function Countdown({ darkMode, onEnter }) {
 
       {/* Logo — large, pushed toward top, edges may crop */}
       <img src={LOGO_DATA_URI} alt="Fall Cup 2026" style={{
-        width:"min(360px, 85vw)", height:"min(360px, 85vw)",
-        marginBottom:-30, marginTop:0, position:"relative", zIndex:1, flexShrink:0,
+        width:"min(460px, 95vw)", height:"min(460px, 95vw)",
+        marginBottom:-20, marginTop:-60, position:"relative", zIndex:1, flexShrink:0,
       }} />
 
       {/* Countdown — overlaps logo base, dark teal pill */}
       {timeLeft && (
         <div style={{
-          position:"relative", zIndex:2, marginBottom:16, textAlign:"center",
+          position:"relative", zIndex:2, marginBottom:24, textAlign:"center",
           background:"rgba(6,42,48,0.88)", borderRadius:14,
           padding:"10px 18px 10px",
           boxShadow:"0 4px 24px rgba(6,42,48,0.25)",
