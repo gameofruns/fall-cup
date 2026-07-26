@@ -681,31 +681,31 @@ const MATCHES_2026 = [
     teamWorld:["fs","tg"], teamRichmond:["cd","sn"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
 
   // ── MATCH 4 — Singles — Friday Back 9 ────────────────────────────────────
-  { id:"26m4a", year:2026, day:"Friday", session:"Session 4", match:"Match 13", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4a", year:2026, day:"Friday", session:"Session 4", match:"Match 13", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["pl"], teamRichmond:["ah"], strokes:5, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m4b", year:2026, day:"Friday", session:"Session 4", match:"Match 14", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4b", year:2026, day:"Friday", session:"Session 4", match:"Match 14", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["ss"], teamRichmond:["bb"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m4c", year:2026, day:"Friday", session:"Session 4", match:"Match 15", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4c", year:2026, day:"Friday", session:"Session 4", match:"Match 15", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["rk"], teamRichmond:["jr"], strokes:9, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m4d", year:2026, day:"Friday", session:"Session 4", match:"Match 16", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4d", year:2026, day:"Friday", session:"Session 4", match:"Match 16", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["kb"], teamRichmond:["sn"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m4e", year:2026, day:"Friday", session:"Session 4", match:"Match 17", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4e", year:2026, day:"Friday", session:"Session 4", match:"Match 17", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["tg"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m4f", year:2026, day:"Friday", session:"Session 4", match:"Match 18", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4f", year:2026, day:"Friday", session:"Session 4", match:"Match 18", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["jh"], teamRichmond:["jc"], strokes:4, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m4g", year:2026, day:"Friday", session:"Session 4", match:"Match 19", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4g", year:2026, day:"Friday", session:"Session 4", match:"Match 19", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["fs"], teamRichmond:["jp"], strokes:1, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m4h", year:2026, day:"Friday", session:"Session 4", match:"Match 20", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4h", year:2026, day:"Friday", session:"Session 4", match:"Match 20", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["bs"], teamRichmond:["cd"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 5 — Mod. Alternate Shot — Saturday Front 9 ─────────────────────
-  { id:"26m5a", year:2026, day:"Saturday", session:"Session 5", match:"Match 21", format:"modalt", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5a", year:2026, day:"Saturday", session:"Session 5", match:"Match 21", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
     teamWorld:["jh","tg"], teamRichmond:["ah","tp"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m5b", year:2026, day:"Saturday", session:"Session 5", match:"Match 22", format:"modalt", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5b", year:2026, day:"Saturday", session:"Session 5", match:"Match 22", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
     teamWorld:["kb","ss"], teamRichmond:["cd","sn"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m5c", year:2026, day:"Saturday", session:"Session 5", match:"Match 23", format:"modalt", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5c", year:2026, day:"Saturday", session:"Session 5", match:"Match 23", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
     teamWorld:["rk","fs"], teamRichmond:["jc","bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
-  { id:"26m5d", year:2026, day:"Saturday", session:"Session 5", match:"Match 24", format:"modalt", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5d", year:2026, day:"Saturday", session:"Session 5", match:"Match 24", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
     teamWorld:["bs","pl"], teamRichmond:["jr","jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 6 — Singles — Saturday Back 9 ──────────────────────────────────
@@ -2898,7 +2898,7 @@ function CountdownUnit({ value, label }) {
   return (
     <div style={{ textAlign:"center", minWidth:64 }}>
       <div style={{ fontSize:52, fontWeight:900, lineHeight:1, color:"#fff",
-        fontVariantNumeric:"tabular-nums", letterSpacing:-2, fontFamily:"system-ui, sans-serif" }}>
+        fontVariantNumeric:"tabular-nums", letterSpacing:-2, fontFamily:"Oswald, system-ui, sans-serif" }}>
         {String(value).padStart(2,"0")}
       </div>
       <div style={{ fontSize:10, fontWeight:700, letterSpacing:2, color:"rgba(255,255,255,0.45)",
@@ -2938,24 +2938,27 @@ function Countdown({ darkMode, onEnter }) {
     <div style={{
       height:"100vh", position:"relative", overflow:"hidden",
       background:"#faf3df",
-      display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-      padding:"0 28px",
+      display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start",
+      paddingTop:"max(20px, 5vh)",
+      paddingLeft:28, paddingRight:28, paddingBottom:20,
+      boxSizing:"border-box",
     }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap');`}</style>
 
 
 
       {/* Logo — large, pushed toward top, edges may crop */}
       <img src={LOGO_DATA_URI} alt="Fall Cup 2026" style={{
-        width:"min(420px, 80vw)", height:"min(420px, 80vw)",
-        marginBottom:-40, marginTop:-20, position:"relative", zIndex:1
+        width:"min(360px, 85vw)", height:"min(360px, 85vw)",
+        marginBottom:-30, marginTop:0, position:"relative", zIndex:1, flexShrink:0,
       }} />
 
       {/* Countdown — overlaps logo base, dark teal pill */}
       {timeLeft && (
         <div style={{
-          position:"relative", zIndex:2, marginBottom:20, textAlign:"center",
-          background:"rgba(6,42,48,0.88)", borderRadius:16,
-          padding:"14px 22px 12px",
+          position:"relative", zIndex:2, marginBottom:16, textAlign:"center",
+          background:"rgba(6,42,48,0.88)", borderRadius:14,
+          padding:"10px 18px 10px",
           boxShadow:"0 4px 24px rgba(6,42,48,0.25)",
         }}>
           <div style={{ fontSize:8, fontWeight:700, letterSpacing:3,
@@ -2970,7 +2973,7 @@ function Countdown({ darkMode, onEnter }) {
               { value:timeLeft.s, label:"Sec" },
             ].map(({ value, label }, i) => (
               <div key={label} style={{ display:"flex", alignItems:"flex-end" }}>
-                <div style={{ textAlign:"center", minWidth:58 }}>
+                <div style={{ textAlign:"center", minWidth:50 }}>
                   <div style={{ fontSize:42, fontWeight:900, lineHeight:1, color:"#fff",
                     fontVariantNumeric:"tabular-nums", letterSpacing:-1 }}>
                     {String(value).padStart(2,"0")}
@@ -2991,10 +2994,10 @@ function Countdown({ darkMode, onEnter }) {
       {/* Enter button */}
       <button onClick={onEnter} style={{
         background:"#062a30", border:"none",
-        color:"#faf3df", borderRadius:8, padding:"14px 52px",
-        fontSize:12, fontWeight:700, cursor:"pointer",
+        color:"#faf3df", borderRadius:8, padding:"12px 44px",
+        fontSize:11, fontWeight:700, cursor:"pointer",
         letterSpacing:3, textTransform:"uppercase",
-        boxShadow:"0 4px 16px rgba(6,42,48,0.3)",
+        boxShadow:"0 4px 16px rgba(6,42,48,0.3)", flexShrink:0,
       }}>
         Enter →
       </button>
@@ -3016,12 +3019,26 @@ export default function FallCupApp() {
   const [matches2026, setMatches2026] = useState(MATCHES_2026);
   const [tab, setTab] = useState("scores");
   const [dayFilter, setDayFilter] = useState("All");
-  const [closedSessions, setClosedSessions] = useState(new Set());
-  const toggleSession = (key) => setClosedSessions(prev => {
-    const next = new Set(prev);
-    if (next.has(key)) next.delete(key); else next.add(key);
-    return next;
-  });
+  // Determine which session is currently active
+  const SESSION_ORDER = ["Session 1","Session 2","Session 3","Session 4","Session 5","Session 6"];
+  const getActiveSession = (matches) => {
+    for (const s of SESSION_ORDER) {
+      const sMatches = matches.filter(m => m.session === s);
+      if (sMatches.length === 0) continue;
+      const done = sMatches.every(m => m.holes.every(h => h !== null));
+      if (!done) return s; // first incomplete session
+    }
+    return SESSION_ORDER[SESSION_ORDER.length - 1]; // all done, keep last open
+  };
+  const activeSession = getActiveSession(activeMatches);
+  const [manualOverrides, setManualOverrides] = useState({});
+  const isSessionOpen = (key) => {
+    if (key in manualOverrides) return manualOverrides[key];
+    return key === activeSession;
+  };
+  const toggleSession = (key) => setManualOverrides(prev => ({
+    ...prev, [key]: !isSessionOpen(key)
+  }));
   const [scoringMatch, setScoringMatch] = useState(null);
   const [showHistoryMenu, setShowHistoryMenu] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
@@ -3048,12 +3065,12 @@ export default function FallCupApp() {
   const filtered = dayFilter==="All" ? activeMatches : activeMatches.filter(m=>m.day===dayFilter);
   // Group by session (each session = one 9-hole block)
   const SESSION_LABELS = {
-    "Session 1":"Session 1 · Texas Scramble · Front 9",
-    "Session 2":"Session 2 · Alternate Shot · Back 9",
-    "Session 3":"Session 3 · Captain's Choice · Front 9",
-    "Session 4":"Session 4 · Singles · Back 9",
-    "Session 5":"Session 5 · Mod. Alternate Shot · Front 9",
-    "Session 6":"Session 6 · Singles · Back 9",
+    "Session 1":"Session 1 · Texas Scramble · Devil's Knob",
+    "Session 2":"Session 2 · Alternate Shot · Devil's Knob",
+    "Session 3":"Session 3 · Captain's Choice · Devil's Knob",
+    "Session 4":"Session 4 · Mod. Alternate Shot · Devil's Knob",
+    "Session 5":"Session 5 · Singles · Stony Creek",
+    "Session 6":"Session 6 · Singles · Stony Creek",
   };
   const grouped = filtered.reduce((acc,m) => {
     const key = m.session || `${m.day} · ${m.round}`;
@@ -3107,7 +3124,7 @@ export default function FallCupApp() {
           </div>
 
           {Object.entries(grouped).map(([group,gms]) => {
-            const isOpen = !closedSessions.has(group);
+            const isOpen = isSessionOpen(group);
             const allDone = gms.every(m => m.holes.every(h => h !== null));
             const wPts = gms.reduce((s,m) => s + m.holes.reduce((a,h) => a + (h==="world"?1:h==="halved"?.5:0), 0), 0);
             const rPts = gms.reduce((s,m) => s + m.holes.reduce((a,h) => a + (h==="richmond"?1:h==="halved"?.5:0), 0), 0);
