@@ -118,7 +118,7 @@ const DK_FRONT_SI  = [11, 9, 5, 17, 7, 13, 1, 15, 3];  // holes 1-9,  index 0=H1
 const DK_BACK_SI   = [2,  4, 14, 16, 12, 18, 8, 10, 6]; // holes 10-18, index 0=H10
 // Stony Creek Monocan/Shamokin – White tees SI
 const SC_FRONT_SI  = [5, 1, 13, 3, 11, 9, 17, 15, 7];   // holes 1-9,  index 0=H1
-const SC_BACK_SI   = [12, 2, 16, 4, 8, 6, 18, 10, 14];  // holes 10-18, index 0=H10
+const SC_BACK_SI   = [12, 2, 16, 4, 8, 6, 18, 10, 14];  // holes 10-18 (Shamokin), index 0=H10
 // Dogwood Trace (2025 venue) – retained for history
 const DOGWOOD_FRONT_SI = [15, 7, 13, 3, 11, 1, 17, 5, 9];
 const DOGWOOD_BACK_SI  = [18, 12, 8, 14, 2, 4, 6, 16, 10];
@@ -1470,32 +1470,26 @@ function HistoryTab({ darkMode }) {
           </div>
         );
       })}
-      {/* Venue map — all Fall Cup locations */}
+      {/* Venue map — verified GPS coordinates from Google Maps */}
       {(() => {
         const venues = [
-          { name:"Hollows",      city:"Montpelier",   lat:37.8234, lng:-77.8112, years:[2017,2023] },
-          { name:"Meadows Farms",city:"Locust Grove", lat:38.3145, lng:-77.7268, years:[2018] },
-          { name:"Piankatank",   city:"Hartfield",    lat:37.6781, lng:-76.5334, years:[2019] },
-          { name:"Providence",   city:"Chesterfield", lat:37.4196, lng:-77.6489, years:[2020,2024] },
-          { name:"Hunting Hawk", city:"Glen Allen",   lat:37.7113, lng:-77.4688, years:[2021] },
-          { name:"Birkdale",     city:"Chesterfield", lat:37.4013, lng:-77.6371, years:[2022] },
-          { name:"Dogwood Trace",city:"Petersburg",   lat:37.2076, lng:-77.4005, years:[2025] },
-          { name:"Wintergreen",  city:"Nelson Co.",   lat:37.9302, lng:-79.1078, years:[2026] },
+          { name:"Hollows",       city:"Montpelier",   lat:37.7895, lng:-77.5971, years:[2017,2023] },
+          { name:"Meadows Farms", city:"Locust Grove", lat:38.3458, lng:-77.7770, years:[2018] },
+          { name:"Piankatank",    city:"Hartfield",    lat:37.5539, lng:-76.4800, years:[2019] },
+          { name:"Providence",    city:"Chesterfield", lat:37.4816, lng:-77.5556, years:[2020,2024] },
+          { name:"Hunting Hawk",  city:"Glen Allen",   lat:37.7132, lng:-77.6218, years:[2021] },
+          { name:"Birkdale",      city:"Chesterfield", lat:37.3875, lng:-77.6702, years:[2022] },
+          { name:"Dogwood Trace", city:"Petersburg",   lat:37.1888, lng:-77.3969, years:[2025] },
+          { name:"Wintergreen",   city:"Nelson Co.",   lat:37.9239, lng:-78.9493, years:[2026] },
         ];
-
-        const W=320, H=210;
-        const LAT_MIN=36.6, LAT_MAX=39.4, LNG_MIN=-80.4, LNG_MAX=-75.5;
+        const W=320, H=200;
+        const LAT_MIN=37.0, LAT_MAX=38.6, LNG_MIN=-79.4, LNG_MAX=-76.0;
         const toX = l => Math.round(((l-LNG_MIN)/(LNG_MAX-LNG_MIN))*W);
         const toY = l => Math.round(((LAT_MAX-l)/(LAT_MAX-LAT_MIN))*H);
-
-        // Rough Virginia state outline (simplified polygon, approximate)
-        const vaOutline = "M40,55 L70,30 L130,15 L190,8 L240,12 L290,25 L310,55 L295,80 L270,95 L250,120 L220,140 L195,160 L165,175 L130,185 L95,180 L65,165 L45,140 L35,110 L30,80 Z";
-
-        const landColor = darkMode ? "#16323a" : "#dfeae3";
-        const waterColor = darkMode ? "#0a1f2e" : "#cfe3ec";
-        const borderColor = darkMode ? "#2a5560" : "#a8c4b8";
-        const labelBg = darkMode ? "rgba(8,20,26,0.88)" : "rgba(255,255,255,0.92)";
-        const labelText = darkMode ? "#e2e8f0" : "#1e293b";
+        const bg = darkMode ? "#0a1628" : "#e2ecf0";
+        const land = darkMode ? "#16323a" : "#d0e8dc";
+        const gridC = darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)";
+        const labelC = darkMode ? "#94a3b8" : "#1e3a5f";
 
         return (
           <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, marginTop:20, overflow:"hidden" }}>
@@ -1503,42 +1497,39 @@ function HistoryTab({ darkMode }) {
               Fall Cup Venues · 2017–2026
             </div>
             <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display:"block" }}>
-              {/* Background (ocean/out-of-state) */}
-              <rect width={W} height={H} fill={waterColor}/>
-              {/* Virginia landmass */}
-              <path d={vaOutline} fill={landColor} stroke={borderColor} strokeWidth={1.5} />
+              <rect width={W} height={H} fill={bg}/>
+              {/* Grid lines */}
+              {[-79,-78,-77,-76].map(l=><line key={l} x1={toX(l)} y1={0} x2={toX(l)} y2={H} stroke={gridC} strokeWidth={0.5}/>)}
+              {[37.5,38,38.5].map(l=><line key={l} x1={0} y1={toY(l)} x2={W} y2={toY(l)} stroke={gridC} strokeWidth={0.5}/>)}
               {/* Venue pins */}
               {venues.map((v,i) => {
                 const x=toX(v.lng), y=toY(v.lat);
-                const isCurrent = v.years.includes(2026);
-                const isMulti = v.years.length > 1;
-                const pinColor = isCurrent ? "#f5be00" : isMulti ? "#4a90d9" : "#194347";
-                const labelAbove = i % 2 === 0;
+                const isCurrent=v.years.includes(2026);
+                const isMulti=v.years.length>1;
+                const pinColor=isCurrent?"#f5be00":isMulti?"#4a90d9":"#194347";
+                const above=i%2===0;
                 return (
                   <g key={i}>
-                    {/* Pin */}
-                    <circle cx={x} cy={y} r={isCurrent?6:4.5} fill={pinColor} stroke="#fff" strokeWidth={1.5}/>
-                    {isCurrent && <text x={x} y={y+3.5} textAnchor="middle" fontSize={7} fill="#194347" fontWeight="900">★</text>}
-                    {/* Label */}
-                    <g transform={`translate(${x}, ${labelAbove ? y-12 : y+12})`}>
-                      <rect x={-26} y={labelAbove?-12:1} width={52} height={13} rx={3}
-                        fill={labelBg} stroke={borderColor} strokeWidth={0.5}/>
-                      <text x={0} y={labelAbove?-3:9.5} textAnchor="middle" fontSize={6.5}
-                        fill={labelText} fontWeight="700">{v.name}</text>
-                    </g>
+                    <circle cx={x} cy={y} r={isCurrent?6:4} fill={pinColor} stroke="#fff" strokeWidth={1.5}/>
+                    {isCurrent&&<text x={x} y={y+3.5} textAnchor="middle" fontSize={6} fill="#194347" fontWeight="900">★</text>}
+                    <text x={x} y={above?y-9:y+16} textAnchor="middle" fontSize={6.5} fill={labelC} fontWeight="700">{v.name}</text>
+                    <text x={x} y={above?y-2:y+23} textAnchor="middle" fontSize={5} fill={labelC} opacity={0.6}>{v.years.join(", ")}</text>
                   </g>
                 );
               })}
+              {/* Compass */}
+              <text x={W-8} y={12} textAnchor="middle" fontSize={9} fill={labelC} fontWeight="700" opacity={0.5}>N</text>
+              <line x1={W-8} y1={14} x2={W-8} y2={22} stroke={labelC} strokeWidth={0.8} opacity={0.4}/>
             </svg>
-            <div style={{ padding:"6px 14px 8px", display:"flex", gap:12, fontSize:9, color:C.muted, flexWrap:"wrap" }}>
+            <div style={{ padding:"6px 14px 6px", display:"flex", gap:12, fontSize:9, color:C.muted, flexWrap:"wrap" }}>
               <span><span style={{color:"#f5be00"}}>★</span> 2026 venue</span>
-              <span><span style={{color:"#4a90d9"}}>●</span> visited 2×</span>
-              <span><span style={{color:"#194347"}}>●</span> visited once</span>
+              <span><span style={{color:"#4a90d9"}}>●</span> 2× visited</span>
+              <span><span style={{color:"#194347",background:"#194347",borderRadius:"50%",display:"inline-block",width:7,height:7}}> </span> 1× visited</span>
             </div>
             <div style={{ padding:"0 14px 12px" }}>
-              {venues.map((v,i) => (
-                <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-                  padding:"5px 0", borderBottom: i<venues.length-1 ? `1px solid ${C.border}` : "none" }}>
+              {venues.map((v,i)=>(
+                <div key={i} style={{ display:"flex", justifyContent:"space-between",
+                  padding:"5px 0", borderBottom:i<venues.length-1?`1px solid ${C.border}`:"none" }}>
                   <div>
                     <span style={{ fontSize:11, fontWeight:600, color:v.years.includes(2026)?C.worldGold:C.text }}>{v.name}</span>
                     <span style={{ fontSize:10, color:C.muted, marginLeft:6 }}>{v.city}, VA</span>
@@ -1618,12 +1609,12 @@ function InfoTab() {
             par:[5,4,4,4,3,4,4,3,5],
             blue:[545,354,427,399,161,364,390,163,501],
             white:[512,324,412,375,148,354,375,150,473],
-            red:[null,null,null,null,null,null,null,null,null] },
+            red:[419,256,337,342,111,304,335,126,414] },
           back: { holes:[10,11,12,13,14,15,16,17,18], si:[12,2,16,4,8,6,18,10,14],
             par:[4,4,3,5,4,4,3,5,4],
             blue:[418,380,155,527,334,383,199,491,435],
             white:[400,372,145,495,325,352,180,473,410],
-            red:[null,null,null,null,null,null,null,null,null] },
+            red:[360,338,121,449,290,318,114,413,370] },
         },
       ].map((course, ci) => {
         const frontParSum = course.front.par.reduce((a,b)=>a+b,0);
@@ -2741,11 +2732,11 @@ function Header({ totals, year, darkMode, onToggleDark, expanded, onToggleExpand
         <button
           onClick={onGoHome}
           style={{ background:"none", border:"none", cursor:"pointer", padding:0,
-            display:"inline-flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+            display:"flex", flexDirection:"column", alignItems:"center", gap:4, width:"100%" }}>
           {/* Year pill — same as landing page */}
           <div style={{ display:"inline-flex", alignItems:"center", justifyContent:"center",
-            background:"#f5be00", borderRadius:4, padding:"3px 8px 2px" }}>
-            <span style={{ fontSize:9, fontWeight:900, letterSpacing:3, color:"#051c1f", lineHeight:1 }}>2026</span>
+            background:"#f5be00", borderRadius:4, padding:"4px 10px 3px", minWidth:48 }}>
+            <span style={{ fontSize:9, fontWeight:900, letterSpacing:3, color:"#051c1f", lineHeight:1, textAlign:"center" }}>2026</span>
           </div>
           {/* Title */}
           <div style={{ color:"#ffffff", fontSize:24, fontWeight:900, letterSpacing:3,
@@ -2898,7 +2889,7 @@ function CountdownUnit({ value, label }) {
   return (
     <div style={{ textAlign:"center", minWidth:64 }}>
       <div style={{ fontSize:52, fontWeight:900, lineHeight:1, color:"#fff",
-        fontVariantNumeric:"tabular-nums", letterSpacing:-2, fontFamily:"Oswald, system-ui, sans-serif" }}>
+        fontVariantNumeric:"tabular-nums", letterSpacing:-1, fontFamily:"Georgia, 'Times New Roman', serif" }}>
         {String(value).padStart(2,"0")}
       </div>
       <div style={{ fontSize:10, fontWeight:700, letterSpacing:2, color:"rgba(255,255,255,0.45)",
@@ -2957,9 +2948,9 @@ function Countdown({ darkMode, onEnter }) {
       {timeLeft && (
         <div style={{
           position:"relative", zIndex:2, marginBottom:24, textAlign:"center",
-          background:"rgba(6,42,48,0.88)", borderRadius:14,
+          background:"#0d4a3a", borderRadius:14,
           padding:"10px 18px 10px",
-          boxShadow:"0 4px 24px rgba(6,42,48,0.25)",
+          boxShadow:"0 4px 24px rgba(13,74,58,0.35)",
         }}>
           <div style={{ fontSize:8, fontWeight:700, letterSpacing:3,
             color:"rgba(255,255,255,0.5)", marginBottom:8, textTransform:"uppercase" }}>
@@ -2993,7 +2984,7 @@ function Countdown({ darkMode, onEnter }) {
 
       {/* Enter button */}
       <button onClick={onEnter} style={{
-        background:"#062a30", border:"none",
+        background:"#0d4a3a", border:"none",
         color:"#faf3df", borderRadius:8, padding:"12px 44px",
         fontSize:11, fontWeight:700, cursor:"pointer",
         letterSpacing:3, textTransform:"uppercase",
