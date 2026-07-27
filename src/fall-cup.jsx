@@ -116,7 +116,7 @@ function calcStrokes(format, worldIds, richmondIds, tees="W") {
 // Devil's Knob – White tees SI by hole
 const DK_FRONT_SI  = [11, 9, 5, 17, 7, 13, 1, 15, 3];  // holes 1-9,  index 0=H1
 const DK_BACK_SI   = [2,  4, 14, 16, 12, 18, 8, 10, 6]; // holes 10-18, index 0=H10
-// Stony Creek Monocan/Shamokin – White tees SI
+// Stoney Creek Monocan/Shamokin – White tees SI
 const SC_FRONT_SI  = [5, 1, 13, 3, 11, 9, 17, 15, 7];   // holes 1-9,  index 0=H1
 const SC_BACK_SI   = [12, 2, 16, 4, 8, 6, 18, 10, 14];  // holes 10-18 (Shamokin), index 0=H10
 // Dogwood Trace (2025 venue) – retained for history
@@ -135,7 +135,7 @@ function getStrokeHoles(strokes, totalHoles, venue, match_nine) {
     // nine field drives front/back selection; venue is now the friendly course name
     const isBack = match_nine && match_nine.includes("Back");
     if      (venue === "Devil's Knob")  siArr = isBack ? DK_BACK_SI : DK_FRONT_SI;
-    else if (venue === "Stony Creek")   siArr = isBack ? SC_BACK_SI : SC_FRONT_SI;
+    else if (venue === "Stoney Creek")   siArr = isBack ? SC_BACK_SI : SC_FRONT_SI;
     else                                siArr = DK_FRONT_SI;
   } else {
     siArr = [...DOGWOOD_FRONT_SI, ...DOGWOOD_BACK_SI];
@@ -699,31 +699,31 @@ const MATCHES_2026 = [
     teamWorld:["bs"], teamRichmond:["cd"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 5 — Mod. Alternate Shot — Saturday Front 9 ─────────────────────
-  { id:"26m5a", year:2026, day:"Saturday", session:"Session 5", match:"Match 21", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5a", year:2026, day:"Saturday", session:"Session 5", match:"Match 21", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["jh","tg"], teamRichmond:["ah","tp"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m5b", year:2026, day:"Saturday", session:"Session 5", match:"Match 22", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5b", year:2026, day:"Saturday", session:"Session 5", match:"Match 22", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["kb","ss"], teamRichmond:["cd","sn"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m5c", year:2026, day:"Saturday", session:"Session 5", match:"Match 23", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5c", year:2026, day:"Saturday", session:"Session 5", match:"Match 23", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["rk","fs"], teamRichmond:["jc","bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
-  { id:"26m5d", year:2026, day:"Saturday", session:"Session 5", match:"Match 24", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m5d", year:2026, day:"Saturday", session:"Session 5", match:"Match 24", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["bs","pl"], teamRichmond:["jr","jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 6 — Singles — Saturday Back 9 ──────────────────────────────────
-  { id:"26m6a", year:2026, day:"Saturday", session:"Session 6", match:"Match 25", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6a", year:2026, day:"Saturday", session:"Session 6", match:"Match 25", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["tg"], teamRichmond:["jc"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m6b", year:2026, day:"Saturday", session:"Session 6", match:"Match 26", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6b", year:2026, day:"Saturday", session:"Session 6", match:"Match 26", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["rk"], teamRichmond:["bb"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6c", year:2026, day:"Saturday", session:"Session 6", match:"Match 27", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6c", year:2026, day:"Saturday", session:"Session 6", match:"Match 27", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["pl"], teamRichmond:["jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6d", year:2026, day:"Saturday", session:"Session 6", match:"Match 28", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6d", year:2026, day:"Saturday", session:"Session 6", match:"Match 28", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["bs"], teamRichmond:["jr"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6e", year:2026, day:"Saturday", session:"Session 6", match:"Match 29", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6e", year:2026, day:"Saturday", session:"Session 6", match:"Match 29", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["ss"], teamRichmond:["cd"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6f", year:2026, day:"Saturday", session:"Session 6", match:"Match 30", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6f", year:2026, day:"Saturday", session:"Session 6", match:"Match 30", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["fs"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6g", year:2026, day:"Saturday", session:"Session 6", match:"Match 31", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6g", year:2026, day:"Saturday", session:"Session 6", match:"Match 31", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["kb"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m6h", year:2026, day:"Saturday", session:"Session 6", match:"Match 32", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stony Creek",
+  { id:"26m6h", year:2026, day:"Saturday", session:"Session 6", match:"Match 32", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["jh"], teamRichmond:["sn"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
 ];
 
@@ -1559,7 +1559,7 @@ function InfoTab() {
         </div>
         {[
           { day:"Friday, Sep 18", course:"Devil's Knob · Wintergreen", details:"4 sessions · 36 holes · ~8:00 AM start", note:"Texas Scramble, Alternate Shot, Captain's Choice, Mod. Alternate Shot. Pairings set Thursday night." },
-          { day:"Saturday, Sep 19", course:"Stony Creek · Wintergreen", details:"2 sessions · 18 holes · ~9:00 AM start", note:"Singles. Final pairings TBD." },
+          { day:"Saturday, Sep 19", course:"Stoney Creek · Wintergreen", details:"2 sessions · 18 holes · ~9:00 AM start", note:"Singles. Final pairings TBD." },
         ].map((d,i) => (
           <div key={i} style={{ padding:"14px", borderBottom:i===0?`1px solid ${C.border}`:"none" }}>
             <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
@@ -1597,7 +1597,7 @@ function InfoTab() {
             red:[406,281,246,238,285,104,280,114,289] },
         },
         {
-          name:"Stony Creek", subtitle:"Monocan / Shamokin · Wintergreen Resort",
+          name:"Stoney Creek", subtitle:"Monocan / Shamokin · Wintergreen Resort",
           elevation:"2,000 ft",
           note:"Nestled in the valley below Devil's Knob. A flatter, more forgiving layout.",
           tees: {
@@ -3055,8 +3055,8 @@ export default function FallCupApp() {
     "Session 2":"Session 2 · Alternate Shot · Devil's Knob",
     "Session 3":"Session 3 · Captain's Choice · Devil's Knob",
     "Session 4":"Session 4 · Mod. Alternate Shot · Devil's Knob",
-    "Session 5":"Session 5 · Singles · Stony Creek",
-    "Session 6":"Session 6 · Singles · Stony Creek",
+    "Session 5":"Session 5 · Singles · Stoney Creek",
+    "Session 6":"Session 6 · Singles · Stoney Creek",
   };
   const grouped = filtered.reduce((acc,m) => {
     const key = m.session || `${m.day} · ${m.round}`;
