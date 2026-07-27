@@ -699,31 +699,41 @@ const MATCHES_2026 = [
     teamWorld:["bs"], teamRichmond:["cd"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 5 — Mod. Alternate Shot — Saturday Front 9 ─────────────────────
-  { id:"26m5a", year:2026, day:"Saturday", session:"Session 5", match:"Match 21", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["jh","tg"], teamRichmond:["ah","tp"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m5b", year:2026, day:"Saturday", session:"Session 5", match:"Match 22", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["kb","ss"], teamRichmond:["cd","sn"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m5c", year:2026, day:"Saturday", session:"Session 5", match:"Match 23", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["rk","fs"], teamRichmond:["jc","bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
-  { id:"26m5d", year:2026, day:"Saturday", session:"Session 5", match:"Match 24", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["bs","pl"], teamRichmond:["jr","jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+  // ── SESSION 5 — Singles — Saturday Front 9 (Stoney Creek) ──────────────
+  { id:"26m5a", year:2026, day:"Saturday", session:"Session 5", match:"Match 17", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["jh"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m5b", year:2026, day:"Saturday", session:"Session 5", match:"Match 18", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["tg"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+  { id:"26m5c", year:2026, day:"Saturday", session:"Session 5", match:"Match 19", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["kb"], teamRichmond:["cd"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m5d", year:2026, day:"Saturday", session:"Session 5", match:"Match 20", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["ss"], teamRichmond:["sn"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
+  { id:"26m5e", year:2026, day:"Saturday", session:"Session 5", match:"Match 21", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["rk"], teamRichmond:["jc"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m5f", year:2026, day:"Saturday", session:"Session 5", match:"Match 22", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["fs"], teamRichmond:["bb"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+  { id:"26m5g", year:2026, day:"Saturday", session:"Session 5", match:"Match 23", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["bs"], teamRichmond:["jr"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m5h", year:2026, day:"Saturday", session:"Session 5", match:"Match 24", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
+    teamWorld:["pl"], teamRichmond:["jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+
 
   // ── MATCH 6 — Singles — Saturday Back 9 ──────────────────────────────────
-  { id:"26m6a", year:2026, day:"Saturday", session:"Session 6", match:"Match 25", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6a", year:2026, day:"Saturday", session:"Session 6", match:"Match 25"5", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["tg"], teamRichmond:["jc"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m6b", year:2026, day:"Saturday", session:"Session 6", match:"Match 26", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6b", year:2026, day:"Saturday", session:"Session 6", match:"Match 26"6", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["rk"], teamRichmond:["bb"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6c", year:2026, day:"Saturday", session:"Session 6", match:"Match 27", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6c", year:2026, day:"Saturday", session:"Session 6", match:"Match 27"7", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["pl"], teamRichmond:["jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6d", year:2026, day:"Saturday", session:"Session 6", match:"Match 28", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6d", year:2026, day:"Saturday", session:"Session 6", match:"Match 28"8", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["bs"], teamRichmond:["jr"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6e", year:2026, day:"Saturday", session:"Session 6", match:"Match 29", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6e", year:2026, day:"Saturday", session:"Session 6", match:"Match 29"9", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["ss"], teamRichmond:["cd"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6f", year:2026, day:"Saturday", session:"Session 6", match:"Match 30", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6f", year:2026, day:"Saturday", session:"Session 6", match:"Match 30"0", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["fs"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6g", year:2026, day:"Saturday", session:"Session 6", match:"Match 31", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6g", year:2026, day:"Saturday", session:"Session 6", match:"Match 31"1", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["kb"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m6h", year:2026, day:"Saturday", session:"Session 6", match:"Match 32", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6h", year:2026, day:"Saturday", session:"Session 6", match:"Match 32"2", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["jh"], teamRichmond:["sn"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
 ];
 
@@ -1486,8 +1496,8 @@ function HistoryTab({ darkMode }) {
         const LAT_MIN=37.0, LAT_MAX=38.6, LNG_MIN=-79.4, LNG_MAX=-76.0;
         const toX = l => Math.round(((l-LNG_MIN)/(LNG_MAX-LNG_MIN))*W);
         const toY = l => Math.round(((LAT_MAX-l)/(LAT_MAX-LAT_MIN))*H);
-        const bg = darkMode ? "#0a1628" : "#e2ecf0";
-        const land = darkMode ? "#16323a" : "#d0e8dc";
+        const bg = darkMode ? "#0d1f2e" : "#dce8f0";
+        const land = darkMode ? "#16323a" : "#c8e0d8";
         const gridC = darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)";
         const labelC = darkMode ? "#94a3b8" : "#1e3a5f";
 
@@ -2889,7 +2899,7 @@ function CountdownUnit({ value, label }) {
   return (
     <div style={{ textAlign:"center", minWidth:64 }}>
       <div style={{ fontSize:52, fontWeight:900, lineHeight:1, color:"#fff",
-        fontVariantNumeric:"tabular-nums", letterSpacing:-1, fontFamily:"Georgia, 'Times New Roman', serif" }}>
+        fontVariantNumeric:"tabular-nums", letterSpacing:-1, fontFamily:"Oswald, sans-serif" }}>
         {String(value).padStart(2,"0")}
       </div>
       <div style={{ fontSize:10, fontWeight:700, letterSpacing:2, color:"rgba(255,255,255,0.45)",
@@ -2934,7 +2944,7 @@ function Countdown({ darkMode, onEnter }) {
       paddingLeft:28, paddingRight:28, paddingBottom:20,
       boxSizing:"border-box",
     }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap');`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap'); * { font-family: 'Oswald', sans-serif !important; }`}</style>
 
 
 
@@ -3076,7 +3086,7 @@ export default function FallCupApp() {
   ];
 
   return (
-    <div style={{ background:C.bg, minHeight:"100vh", fontFamily:"'Arial Narrow', Arial, sans-serif", maxWidth:480, margin:"0 auto", color:C.text }}>
+    <div style={{ background:C.bg, minHeight:"100vh", fontFamily:"Oswald, sans-serif", maxWidth:480, margin:"0 auto", color:C.text }}>
       <Header totals={totals} year={2026} darkMode={darkMode} onToggleDark={() => setDarkMode(d => !d)} expanded={scoreBannerExpanded} onToggleExpanded={() => setScoreBannerExpanded(e => !e)} onGoHome={() => setShowLanding(true)}
         allMatchesComplete={activeMatches.length > 0 && activeMatches.every(m => m.holes.every(h => h !== null))}>
         {/* Tab bar — lives inside sticky header so it always sticks just below scores */}
