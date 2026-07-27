@@ -719,21 +719,21 @@ const MATCHES_2026 = [
 
 
   // ── MATCH 6 — Singles — Saturday Back 9 ──────────────────────────────────
-  { id:"26m6a", year:2026, day:"Saturday", session:"Session 6", match:"Match 25"5", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6a", year:2026, day:"Saturday", session:"Session 6", match:"Match 25", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["tg"], teamRichmond:["jc"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m6b", year:2026, day:"Saturday", session:"Session 6", match:"Match 26"6", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6b", year:2026, day:"Saturday", session:"Session 6", match:"Match 26", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["rk"], teamRichmond:["bb"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6c", year:2026, day:"Saturday", session:"Session 6", match:"Match 27"7", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6c", year:2026, day:"Saturday", session:"Session 6", match:"Match 27", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["pl"], teamRichmond:["jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6d", year:2026, day:"Saturday", session:"Session 6", match:"Match 28"8", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6d", year:2026, day:"Saturday", session:"Session 6", match:"Match 28", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["bs"], teamRichmond:["jr"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6e", year:2026, day:"Saturday", session:"Session 6", match:"Match 29"9", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6e", year:2026, day:"Saturday", session:"Session 6", match:"Match 29", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["ss"], teamRichmond:["cd"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6f", year:2026, day:"Saturday", session:"Session 6", match:"Match 30"0", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6f", year:2026, day:"Saturday", session:"Session 6", match:"Match 30", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["fs"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m6g", year:2026, day:"Saturday", session:"Session 6", match:"Match 31"1", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6g", year:2026, day:"Saturday", session:"Session 6", match:"Match 31", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["kb"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m6h", year:2026, day:"Saturday", session:"Session 6", match:"Match 32"2", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
+  { id:"26m6h", year:2026, day:"Saturday", session:"Session 6", match:"Match 32", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["jh"], teamRichmond:["sn"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
 ];
 
