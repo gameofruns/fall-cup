@@ -97,18 +97,18 @@ const ALL_PLAYERS = [
   { id:"jh",  name:"J. Hicks",     team:"world",    hc:8,  hcB:10, hcW:8,  hcG:6 },
   { id:"rk",  name:"R. Karnes",    team:"world",    hc:2,  hcB:4,  hcW:2,  hcG:1 },
   { id:"ss",  name:"S. Smith",     team:"world",    hc:7,  hcB:8,  hcW:7,  hcG:5 },
-  { id:"kb",  name:"K. Bauer",     team:"world",    hc:7,  hcB:9,  hcW:7,  hcG:6 },
+  { id:"kb",  name:"K. Bauer",     team:"world",    hc:7,  hcB:9,  hcW:7,  hcG:5 },
   { id:"fs",  name:"F. Smith",     team:"world",    hc:8,  hcB:9,  hcW:8,  hcG:6 },
   { id:"bs",  name:"B. Settle",    team:"world",    hc:6,  hcB:7,  hcW:6,  hcG:4 },
-  { id:"pl",  name:"P. Limon",     team:"world",    hc:6,  hcB:8,  hcW:6,  hcG:5 },
+  { id:"pl",  name:"P. Limon",     team:"world",    hc:6,  hcB:8,  hcW:6,  hcG:4 },
   { id:"tg",  name:"T. Grammo",    team:"world",    captain:true, hc:7,  hcB:9,  hcW:7,  hcG:5 },
-  { id:"tp",  name:"T. Perdue",    team:"richmond", captain:true, hc:4,  hcB:5,  hcW:4,  hcG:2 },
+  { id:"tp",  name:"T. Perdue",    team:"richmond", captain:true, hc:4,  hcB:5,  hcW:4,  hcG:3 },
   { id:"jp",  name:"J. Pleasants", team:"richmond", hc:9,  hcB:11, hcW:9,  hcG:7 },
-  { id:"jc",  name:"J. Cummings",  team:"richmond", hc:4,  hcB:5,  hcW:4,  hcG:2 },
+  { id:"jc",  name:"J. Cummings",  team:"richmond", hc:4,  hcB:5,  hcW:4,  hcG:3 },
   { id:"cd",  name:"C. Dozier",    team:"richmond", hc:9,  hcB:10, hcW:9,  hcG:7 },
   { id:"jr",  name:"J. Rabideau",  team:"richmond", hc:12, hcB:14, hcW:12, hcG:10 },
-  { id:"sn",  name:"S. Newton",    team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:3 },
-  { id:"bb",  name:"B. Beruete",   team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:3 },
+  { id:"sn",  name:"S. Newton",    team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4 },
+  { id:"bb",  name:"B. Beruete",   team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4 },
   { id:"ah",  name:"A. Hoy",       team:"richmond", hc:11, hcB:13, hcW:11, hcG:9 },
 ];
 
@@ -690,43 +690,43 @@ const MATCHES_2025 = [
 // M1=Scramble  M2=Alt Shot  M3=Captain's Choice  M4=Singles  M5=Mod Alt  M6=Singles
 const MATCHES_2026 = [
   // ── MATCH 1 — Texas Scramble — Friday Front 9 ────────────────────────────
-  { id:"26m1a", year:2026, day:"Friday", session:"Session 1", match:"Match 1", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["pl","tg"], teamRichmond:["jp","bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
-  { id:"26m1b", year:2026, day:"Friday", session:"Session 1", match:"Match 2", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m1a", year:2026, day:"Friday", session:"Session 1", match:"Match 1", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+    teamWorld:["pl","tg"], teamRichmond:["jp","bb"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
+  { id:"26m1b", year:2026, day:"Friday", session:"Session 1", match:"Match 2", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["fs","kb"], teamRichmond:["sn","jc"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m1c", year:2026, day:"Friday", session:"Session 1", match:"Match 3", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["jh","bs"], teamRichmond:["tp","jr"], strokes:1, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m1d", year:2026, day:"Friday", session:"Session 1", match:"Match 4", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["rk","ss"], teamRichmond:["ah","cd"], strokes:5, strokesTo:"world", holes:Array(9).fill(null) },
+  { id:"26m1c", year:2026, day:"Friday", session:"Session 1", match:"Match 3", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+    teamWorld:["jh","bs"], teamRichmond:["tp","jr"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
+  { id:"26m1d", year:2026, day:"Friday", session:"Session 1", match:"Match 4", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+    teamWorld:["rk","ss"], teamRichmond:["ah","cd"], strokes:4, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 2 — Alternate Shot — Friday Back 9 ─────────────────────────────
-  { id:"26m2a", year:2026, day:"Friday", session:"Session 2", match:"Match 5", format:"alt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m2a", year:2026, day:"Friday", session:"Session 2", match:"Match 5", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
     teamWorld:["pl","bs"], teamRichmond:["sn","cd"], strokes:1, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m2b", year:2026, day:"Friday", session:"Session 2", match:"Match 6", format:"alt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m2b", year:2026, day:"Friday", session:"Session 2", match:"Match 6", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
     teamWorld:["jh","tg"], teamRichmond:["jc","bb"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m2c", year:2026, day:"Friday", session:"Session 2", match:"Match 7", format:"alt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["ss","fs"], teamRichmond:["tp","jr"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
-  { id:"26m2d", year:2026, day:"Friday", session:"Session 2", match:"Match 8", format:"alt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["kb","rk"], teamRichmond:["ah","jp"], strokes:5, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m2c", year:2026, day:"Friday", session:"Session 2", match:"Match 7", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
+    teamWorld:["ss","fs"], teamRichmond:["tp","jr"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
+  { id:"26m2d", year:2026, day:"Friday", session:"Session 2", match:"Match 8", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
+    teamWorld:["kb","rk"], teamRichmond:["ah","jp"], strokes:4, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 3 — Captain's Choice — Friday Front 9 ──────────────────────────
-  { id:"26m3a", year:2026, day:"Friday", session:"Session 3", match:"Match 9", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m3a", year:2026, day:"Friday", session:"Session 3", match:"Match 9", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["bs","jh"], teamRichmond:["ah","jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m3b", year:2026, day:"Friday", session:"Session 3", match:"Match 10", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["kb","pl"], teamRichmond:["jr","tp"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
-  { id:"26m3c", year:2026, day:"Friday", session:"Session 3", match:"Match 11", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m3b", year:2026, day:"Friday", session:"Session 3", match:"Match 10", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+    teamWorld:["kb","pl"], teamRichmond:["jr","tp"], strokes:1, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m3c", year:2026, day:"Friday", session:"Session 3", match:"Match 11", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["rk","ss"], teamRichmond:["jc","bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
-  { id:"26m3d", year:2026, day:"Friday", session:"Session 3", match:"Match 12", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m3d", year:2026, day:"Friday", session:"Session 3", match:"Match 12", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["fs","tg"], teamRichmond:["cd","sn"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
 
   // ── MATCH 4 — Singles — Friday Back 9 ────────────────────────────────────
-  { id:"26m4a", year:2026, day:"Friday", session:"Session 4", match:"Match 13", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["pl"], teamRichmond:["ah"], strokes:5, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m4b", year:2026, day:"Friday", session:"Session 4", match:"Match 14", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["ss"], teamRichmond:["bb"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
-  { id:"26m4c", year:2026, day:"Friday", session:"Session 4", match:"Match 15", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["rk"], teamRichmond:["jr"], strokes:9, strokesTo:"richmond", holes:Array(9).fill(null) },
-  { id:"26m4d", year:2026, day:"Friday", session:"Session 4", match:"Match 16", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
+  { id:"26m4a", year:2026, day:"Friday", session:"Session 4", match:"Match 13", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
+    teamWorld:["pl"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m4b", year:2026, day:"Friday", session:"Session 4", match:"Match 14", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
+    teamWorld:["ss"], teamRichmond:["bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
+  { id:"26m4c", year:2026, day:"Friday", session:"Session 4", match:"Match 15", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
+    teamWorld:["rk"], teamRichmond:["jr"], strokes:7, strokesTo:"richmond", holes:Array(9).fill(null) },
+  { id:"26m4d", year:2026, day:"Friday", session:"Session 4", match:"Match 16", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
     teamWorld:["kb"], teamRichmond:["sn"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m4e", year:2026, day:"Friday", session:"Session 4", match:"Match 17", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["tg"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
@@ -1595,19 +1595,22 @@ function InfoTab() {
           elevation:"3,850 ft",
           note:"Highest elevation course in Virginia. Expect cooler temps and mountain breezes.",
           tees: {
-            blue:  { rating:"72.10", slope:"132" },
+            blue:  { rating:"73.20", slope:"138" },
             white: { rating:"70.60", slope:"132" },
-            red:   { rating:"66.40", slope:"119" },
+            gold:  { rating:"68.10", slope:"126" },
+            red:   { rating:"62.80", slope:"117" },
           },
           front: { holes:[1,2,3,4,5,6,7,8,9], si:[11,9,5,17,7,13,1,15,3],
             par:[4,4,3,5,3,5,3,4,4],
-            blue:[392,520,160,487,194,585,200,485,392],
-            white:[364,484,138,447,179,530,166,403,378],
-            red:[314,244,86,376,127,429,118,206,235] },
+            blue:[411,392,520,160,487,194,585,200,485],
+            white:[378,364,484,138,447,179,530,166,403],
+            gold:[344,356,459,124,438,160,508,129,335],
+            red:[300,314,244,86,376,127,429,118,206] },
           back: { holes:[10,11,12,13,14,15,16,17,18], si:[2,4,14,16,12,18,8,10,6],
             par:[5,4,4,4,4,3,4,3,4],
-            blue:[571,392,354,370,374,185,417,185,430],
+            blue:[551,392,354,370,374,185,417,185,430],
             white:[547,350,329,328,357,166,391,179,387],
+            gold:[472,339,314,298,342,125,348,177,357],
             red:[406,281,246,238,285,104,280,114,289] },
         },
         {
@@ -1675,6 +1678,7 @@ function InfoTab() {
                 {[
                   { label:"Blue",  color:"#2e78c8", data:course.tees.blue },
                   { label:"White", color:"#94a3b8", data:course.tees.white },
+                  ...(course.tees.gold ? [{ label:"Gold", color:"#c8900a", data:course.tees.gold }] : []),
                   { label:"Red",   color:"#dc2626", data:course.tees.red },
                 ].map(t => (
                   <div key={t.label} style={{ display:"flex", alignItems:"center", gap:5 }}>
@@ -1723,6 +1727,7 @@ function InfoTab() {
                 {/* Tee yardage rows */}
                 <TeeRow label="BLUE"  color="#2e78c8" frontVals={course.front.blue}  backVals={course.back.blue}  />
                 <TeeRow label="WHITE" color="#94a3b8" frontVals={course.front.white} backVals={course.back.white} />
+                {course.front.gold && <TeeRow label="GOLD" color="#c8900a" frontVals={course.front.gold} backVals={course.back.gold} />}
                 <TeeRow label="RED"   color="#dc2626" frontVals={course.front.red}   backVals={course.back.red}   />
               </div>
             </div>
@@ -2898,28 +2903,33 @@ function Header({ totals, year, darkMode, onToggleDark, expanded, onToggleExpand
 
 // ── DRAFT ROOM ────────────────────────────────────────────────────────────────
 const DRAFT_SESSIONS = [
-  { id:"s1", label:"Session 1", format:"Texas Scramble",       day:"Friday",   slots:4 },
-  { id:"s2", label:"Session 2", format:"Alternate Shot",       day:"Friday",   slots:4 },
-  { id:"s3", label:"Session 3", format:"Captain\'s Choice",   day:"Friday",   slots:4 },
-  { id:"s4", label:"Session 4", format:"Mod. Alternate Shot",  day:"Friday",   slots:4 },
+  { id:"s1", label:"Session 1", format:"Captain\'s Choice",  tee:"white", fmtKey:"captains", day:"Friday",  matchIds:["26m1a","26m1b","26m1c","26m1d"] },
+  { id:"s2", label:"Session 2", format:"Mod. Alt Shot",       tee:"gold",  fmtKey:"modalt",   day:"Friday",  matchIds:["26m2a","26m2b","26m2c","26m2d"] },
+  { id:"s3", label:"Session 3", format:"Texas Scramble",      tee:"white", fmtKey:"scramble", day:"Friday",  matchIds:["26m3a","26m3b","26m3c","26m3d"] },
+  { id:"s4", label:"Session 4", format:"Captain\'s Choice",  tee:"red",   fmtKey:"captains", day:"Friday",  matchIds:["26m4a","26m4b","26m4c","26m4d"] },
 ];
 
 const WORLD_PLAYERS_DRAFT   = ALL_PLAYERS.filter(p=>p.team==="world"    && !p.alumni);
 const RICHMOND_PLAYERS_DRAFT = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.alumni);
 
-function draftGetHC(id) { return ALL_PLAYERS.find(p=>p.id===id)?.handicap ?? 0; }
+function draftGetHCByTee(id, tee) {
+  const p = ALL_PLAYERS.find(x=>x.id===id);
+  if (!p) return 0;
+  if (tee==="gold" || tee==="red") return p.hcG ?? p.hc ?? 0;
+  if (tee==="blue") return p.hcB ?? p.hc ?? 0;
+  return p.hcW ?? p.hc ?? 0;
+}
 
-function draftCalcStrokes(wIds, rIds, fmt) {
-  const hcs = ids => ids.map(getHC);
+function draftCalcStrokes(wIds, rIds, fmt, tee="white") {
   function teamHC(ids) {
-    const [lo, hi] = [...hcs(ids)].sort((a,b)=>a-b);
+    const hcs = ids.map(id=>draftGetHCByTee(id,tee)).sort((a,b)=>a-b);
+    const [lo, hi] = hcs;
     if (fmt==="scramble")  return Math.ceil((lo+hi)/2);
-    if (fmt==="alt")       return Math.round(lo*0.6)+Math.round(hi*0.4);
     if (fmt==="captains")  return Math.round(lo*0.5)+Math.round(hi*0.25);
     if (fmt==="modalt")    return Math.round(lo*0.75)+Math.round(hi*0.25);
+    if (fmt==="alt")       return Math.round(lo*0.6)+Math.round(hi*0.4);
     return lo;
   }
-  const fmtKey = fmt==="Texas Scramble"?"scramble":fmt==="Alternate Shot"?"alt":fmt==="Captain\'s Choice"?"captains":"modalt";
   const diff = teamHC(wIds) - teamHC(rIds);
   return { strokes:Math.abs(diff), strokesTo: diff>0?"world":diff<0?"richmond":"none" };
 }
@@ -2960,22 +2970,20 @@ function DraftRoom({ darkMode }) {
 
   function togglePlayer(team, id) {
     if (team==="world") {
-      if (pickingTeam!=="world") return;
       setSelectedWorld(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id].slice(-2));
     } else {
-      if (pickingTeam!=="richmond") return;
       setSelectedRichmond(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id].slice(-2));
     }
   }
 
   function lockPairing() {
     if (selectedWorld.length!==2||selectedRichmond.length!==2) return;
-    const newMatch = { world:selectedWorld, richmond:selectedRichmond };
+    const sess = DRAFT_SESSIONS.find(s=>s.id===activeSession);
+    const newMatch = { world:[...selectedWorld], richmond:[...selectedRichmond] };
     const updated = { ...draft, [activeSession]:[...(draft[activeSession]||[]), newMatch] };
     setDraft(updated);
     setSelectedWorld([]);
     setSelectedRichmond([]);
-    // Alternate who picks next (snake)
     setPickingTeam(t=>t==="world"?"richmond":"world");
   }
 
@@ -2988,22 +2996,15 @@ function DraftRoom({ darkMode }) {
     setSaving(true);
     try {
       // Build match updates for sessions 1-4
-      const SESSION_MATCH_IDS = {
-        s1:["26m1a","26m1b","26m1c","26m1d"],
-        s2:["26m2a","26m2b","26m2c","26m2d"],
-        s3:["26m3a","26m3b","26m3c","26m3d"],
-        s4:["26m4a","26m4b","26m4c","26m4d"],
-      };
-      const FORMAT_KEYS = { s1:"scramble", s2:"alt", s3:"captains", s4:"modalt" };
       const rows = [];
       for (const sid of ["s1","s2","s3","s4"]) {
         const matches = draft[sid]||[];
-        const ids = SESSION_MATCH_IDS[sid];
-        const fmtKey = FORMAT_KEYS[sid];
+        const sessInfo = DRAFT_SESSIONS.find(s=>s.id===sid);
         matches.forEach((m,i)=>{
-          if (!ids[i]) return;
-          const {strokes,strokesTo} = draftCalcStrokes(m.world, m.richmond, fmtKey);
-          rows.push({ id:ids[i], world:m.world, richmond:m.richmond, strokes, strokesTo });
+          const matchId = sessInfo.matchIds[i];
+          if (!matchId) return;
+          const {strokes,strokesTo} = draftCalcStrokes(m.world, m.richmond, sessInfo.fmtKey, sessInfo.tee);
+          rows.push({ id:matchId, world:m.world, richmond:m.richmond, strokes, strokes_to:strokesTo });
         });
       }
       // Save pairing data to Supabase in a new table
@@ -3100,7 +3101,7 @@ function DraftRoom({ darkMode }) {
                     color: inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
                     display:"flex", justifyContent:"space-between", alignItems:"center", opacity:inUse?0.4:1 }}>
                   <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
-                  <span style={{ fontSize:11, color:C.muted }}>HC {p.handicap}</span>
+                  <span style={{ fontSize:11, color:C.muted }}>HC {p.hc}</span>
                 </button>
               );
             })}
@@ -3119,7 +3120,7 @@ function DraftRoom({ darkMode }) {
                     color: inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
                     display:"flex", justifyContent:"space-between", alignItems:"center", opacity:inUse?0.4:1 }}>
                   <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
-                  <span style={{ fontSize:11, color:C.muted }}>HC {p.handicap}</span>
+                  <span style={{ fontSize:11, color:C.muted }}>HC {p.hc}</span>
                 </button>
               );
             })}
@@ -3158,7 +3159,7 @@ function DraftRoom({ darkMode }) {
                     display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                     <div>
                       <div style={{ fontWeight:800, fontSize:14, color:isActive?C.accent:C.text }}>{sess.label}</div>
-                      <div style={{ fontSize:11, color:C.muted }}>{sess.format} · {sess.day}</div>
+                      <div style={{ fontSize:11, color:C.muted }}>{sess.format} · {sess.tee} tees</div>
                     </div>
                     <div style={{ fontSize:11, fontWeight:700, color:isFull?"#15803d":C.muted }}>
                       {matches.length}/4 {isFull?"✓ DONE":""}
@@ -3168,7 +3169,7 @@ function DraftRoom({ darkMode }) {
                     {matches.length===0 && <div style={{color:C.muted,fontSize:12,textAlign:"center",padding:"8px 0"}}>No pairings yet</div>}
                     {matches.map((m,i)=>{
                       const fmtKey = {s1:"scramble",s2:"alt",s3:"captains",s4:"modalt"}[sess.id];
-                      const {strokes,strokesTo} = draftCalcStrokes(m.world, m.richmond, fmtKey);
+                      const {strokes,strokesTo} = draftCalcStrokes(m.world, m.richmond, sess.fmtKey, sess.tee);
                       const wNames = m.world.map(id=>ALL_PLAYERS.find(p=>p.id===id)?.name?.split(" ")[1]||id).join(" & ");
                       const rNames = m.richmond.map(id=>ALL_PLAYERS.find(p=>p.id===id)?.name?.split(" ")[1]||id).join(" & ");
                       return (
@@ -3419,10 +3420,10 @@ export default function FallCupApp() {
   const filtered = dayFilter==="All" ? activeMatches : activeMatches.filter(m=>m.day===dayFilter);
   // Group by session (each session = one 9-hole block)
   const SESSION_LABELS = {
-    "Session 1":"Session 1 · Texas Scramble · Devil's Knob",
-    "Session 2":"Session 2 · Alternate Shot · Devil's Knob",
-    "Session 3":"Session 3 · Captain's Choice · Devil's Knob",
-    "Session 4":"Session 4 · Mod. Alternate Shot · Devil's Knob",
+    "Session 1":"Session 1 · Captain's Choice · White Tees",
+    "Session 2":"Session 2 · Mod. Alt Shot · Gold Tees",
+    "Session 3":"Session 3 · Texas Scramble · White Tees",
+    "Session 4":"Session 4 · Captain's Choice · Red Tees",
     "Session 5":"Session 5 · Singles · Stoney Creek",
     "Session 6":"Session 6 · Singles · Stoney Creek",
   };
