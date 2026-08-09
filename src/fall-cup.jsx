@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
 const SUPABASE_URL = "https://swbzbbpkzwrvoxlacuwr.supabase.co";
@@ -2939,19 +2939,76 @@ function DraftRoom({ darkMode }) {
   const [pin, setPin] = useState("");
   const [authed, setAuthed] = useState(false);
   const [pinError, setPinError] = useState(false);
+  const [draftDay, setDraftDay] = useState("day1"); // "day1" | "day2"
 
-  // Draft state: { s1:[{world:[id,id], richmond:[id,id]}, ...], s2:[], ... }
+  // Day 1 draft state
   const [draft, setDraft] = useState({ s1:[], s2:[], s3:[], s4:[] });
-
-  // Current pick state
   const [activeSession, setActiveSession] = useState("s1");
-  const [pickingTeam, setPickingTeam] = useState("world"); // world picks first
+  const [pickingTeam, setPickingTeam] = useState("world");
   const [selectedWorld, setSelectedWorld] = useState([]);
   const [selectedRichmond, setSelectedRichmond] = useState([]);
-  const [firstPick, setFirstPick] = useState("world"); // who picked first this session
+  const [firstPick, setFirstPick] = useState("world");
   const [finalized, setFinalized] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  // Day 2 singles draft state
+  const [singles, setSingles] = useState([]); // [{world:id, richmond:id}, ...]
+  const [singlesPickingTeam, setSinglesPickingTeam] = useState("world");
+  const [singlesFirstPick, setSinglesFirstPick] = useState("world");
+  const [selectedSinglesWorld, setSelectedSinglesWorld] = useState(null);
+  const [selectedSinglesRichmond, setSelectedSinglesRichmond] = useState(null);
+  const [singlesFinalized, setSinglesFinalized] = useState(false);
+  const [singlesSaving, setSinglesSaving] = useState(false);
+  const [singlesSaved, setSinglesSaved] = useState(false);
+
+  const SINGLES_MATCH_IDS = ["26m5a","26m5b","26m5c","26m5d","26m5e","26m5f","26m5g","26m5h",
+                              "26m6a","26m6b","26m6c","26m6d","26m6e","26m6f","26m6g","26m6h"];
+
+  function usedInSingles(team) {
+    return new Set(singles.map(m => team==="world" ? m.world : m.richmond));
+  }
+
+  function toggleSinglesPlayer(team, id) {
+    if (team==="world") setSelectedSinglesWorld(prev=>prev===id?null:id);
+    else setSelectedSinglesRichmond(prev=>prev===id?null:id);
+  }
+
+  // Auto-lock singles when both selected
+  useEffect(() => {
+    if (selectedSinglesWorld && selectedSinglesRichmond) {
+      setSingles(prev=>[...prev, {world:selectedSinglesWorld, richmond:selectedSinglesRichmond}]);
+      setSelectedSinglesWorld(null);
+      setSelectedSinglesRichmond(null);
+      setSinglesPickingTeam(t=>t==="world"?"richmond":"world");
+    }
+  }, [selectedSinglesWorld, selectedSinglesRichmond]);
+
+  function removeSinglesMatch(idx) {
+    setSingles(prev=>prev.filter((_,i)=>i!==idx));
+  }
+
+  async function finalizeSingles() {
+    setSinglesSaving(true);
+    try {
+      const rows = singles.map((m,i) => {
+        const matchId = SINGLES_MATCH_IDS[i];
+        const diff = draftGetHCByTee(m.world,"white") - draftGetHCByTee(m.richmond,"white");
+        const strokes = Math.min(Math.abs(diff), 9);
+        const strokes_to = diff>0?"world":diff<0?"richmond":"none";
+        return { id:matchId, world:[m.world], richmond:[m.richmond], strokes, strokes_to };
+      });
+      await fetch(`${SUPABASE_URL}/rest/v1/match_pairings`, {
+        method:"POST",
+        headers:{ apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`,
+          "Content-Type":"application/json", Prefer:"resolution=merge-duplicates" },
+        body: JSON.stringify(rows),
+      });
+      setSinglesSaved(true);
+      setSinglesFinalized(true);
+    } catch(e) { alert("Save failed: "+e.message); }
+    setSinglesSaving(false);
+  }
 
   // Track used players per session
   function usedInSession(sid) {
@@ -3058,14 +3115,163 @@ function DraftRoom({ darkMode }) {
           </div>
           <div style={{ color:"white", fontSize:28, fontWeight:900, letterSpacing:2 }}>FALL CUP · DRAFT ROOM</div>
           <div style={{ color:"rgba(255,255,255,0.5)", fontSize:12, letterSpacing:2 }}>PAIRINGS SELECTION</div>
+          <div style={{ display:"flex", gap:8, marginTop:10 }}>
+            {[{id:"day1",label:"Day 1 · Team Formats"},{id:"day2",label:"Day 2 · Singles"}].map(d=>(
+              <button key={d.id} onClick={()=>setDraftDay(d.id)}
+                style={{ padding:"6px 16px", borderRadius:20, border:"none", cursor:"pointer",
+                  background:draftDay===d.id?"#f5be00":"rgba(255,255,255,0.12)",
+                  color:draftDay===d.id?"#051c1f":"white", fontWeight:700, fontSize:12 }}>
+                {d.label}
+              </button>
+            ))}
+          </div>
         </div>
         {saved && <div style={{ background:"#15803d", color:"white", borderRadius:8, padding:"10px 20px", fontWeight:700 }}>
           ✓ Saved to App
         </div>}
       </div>
 
-      <div style={{ display:"flex", gap:0, height:"calc(100vh - 90px)" }}>
+      <div style={{ display:"flex", gap:0, height:"calc(100vh - 110px)" }}>
 
+        {draftDay==="day2" ? (
+        /* ── DAY 2 SINGLES DRAFT ── */
+        <div style={{ display:"flex", gap:0, flex:1, overflow:"hidden" }}>
+          {/* Singles player pool */}
+          <div style={{ width:240, background:C.card, borderRight:`1px solid ${C.border}`, overflowY:"auto", flexShrink:0 }}>
+            <div style={{ padding:"12px 14px", borderBottom:`1px solid ${C.border}` }}>
+              <div style={{ fontSize:10, fontWeight:700, letterSpacing:2, color:C.muted, marginBottom:8 }}>NOW PICKING</div>
+              <div style={{ display:"flex", gap:8 }}>
+                <div style={{ flex:1, textAlign:"center", padding:"6px 4px", borderRadius:8,
+                  background:singlesPickingTeam==="world"?C.worldBg:"transparent",
+                  border:`2px solid ${singlesPickingTeam==="world"?C.worldGold:C.border}` }}>
+                  <div style={{ color:C.worldGold, fontWeight:700, fontSize:12 }}>WORLD</div>
+                </div>
+                <div style={{ flex:1, textAlign:"center", padding:"6px 4px", borderRadius:8,
+                  background:singlesPickingTeam==="richmond"?C.richBg:"transparent",
+                  border:`2px solid ${singlesPickingTeam==="richmond"?C.richLight:C.border}` }}>
+                  <div style={{ color:C.richLight, fontWeight:700, fontSize:12 }}>RICHMOND</div>
+                </div>
+              </div>
+              <button onClick={()=>setSinglesFirstPick(p=>p==="world"?"richmond":"world")}
+                style={{ marginTop:8, width:"100%", padding:"6px", borderRadius:6, border:`1px solid ${C.border}`,
+                  background:"transparent", color:C.muted, fontSize:11, cursor:"pointer" }}>
+                Swap first pick (currently {singlesFirstPick==="world"?"World":"Richmond"})
+              </button>
+            </div>
+            {/* World singles */}
+            <div style={{ padding:"10px 14px 6px" }}>
+              <div style={{ color:C.worldGold, fontSize:10, fontWeight:700, letterSpacing:2, marginBottom:6 }}>TEAM WORLD</div>
+              {WORLD_PLAYERS_DRAFT.map(p=>{
+                const used=usedInSingles("world").has(p.id);
+                const sel=selectedSinglesWorld===p.id;
+                return <button key={p.id} onClick={()=>!used&&toggleSinglesPlayer("world",p.id)}
+                  style={{ width:"100%", padding:"7px 10px", marginBottom:4, borderRadius:8,
+                    border:`2px solid ${sel?C.worldGold:used?C.border:"transparent"}`,
+                    background:sel?C.worldBg:C.cardAlt, color:used?C.muted:C.text,
+                    cursor:used?"not-allowed":"pointer", display:"flex", justifyContent:"space-between",
+                    opacity:used?0.4:1, alignItems:"center" }}>
+                  <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
+                  <span style={{ fontSize:11, color:C.muted }}>HC {p.hc}</span>
+                </button>;
+              })}
+            </div>
+            {/* Richmond singles */}
+            <div style={{ padding:"10px 14px 6px" }}>
+              <div style={{ color:C.richLight, fontSize:10, fontWeight:700, letterSpacing:2, marginBottom:6 }}>TEAM RICHMOND</div>
+              {RICHMOND_PLAYERS_DRAFT.map(p=>{
+                const used=usedInSingles("richmond").has(p.id);
+                const sel=selectedSinglesRichmond===p.id;
+                return <button key={p.id} onClick={()=>!used&&toggleSinglesPlayer("richmond",p.id)}
+                  style={{ width:"100%", padding:"7px 10px", marginBottom:4, borderRadius:8,
+                    border:`2px solid ${sel?C.richLight:used?C.border:"transparent"}`,
+                    background:sel?C.richBg:C.cardAlt, color:used?C.muted:C.text,
+                    cursor:used?"not-allowed":"pointer", display:"flex", justifyContent:"space-between",
+                    opacity:used?0.4:1, alignItems:"center" }}>
+                  <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
+                  <span style={{ fontSize:11, color:C.muted }}>HC {p.hc}</span>
+                </button>;
+              })}
+            </div>
+          </div>
+
+          {/* Singles matchups board */}
+          <div style={{ flex:1, overflowY:"auto", padding:"20px 24px" }}>
+            <div style={{ background:C.card, borderRadius:12, border:`1px solid ${C.border}`, overflow:"hidden", marginBottom:20 }}>
+              <div style={{ padding:"12px 16px", borderBottom:`1px solid ${C.border}`, background:`${C.accent}18`,
+                display:"flex", justifyContent:"space-between" }}>
+                <div style={{ fontWeight:800, fontSize:14 }}>Day 2 Singles · Stoney Creek</div>
+                <div style={{ fontSize:11, color:C.muted }}>{singles.length}/8 matchups</div>
+              </div>
+              {/* Header row */}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", padding:"6px 16px",
+                borderBottom:`1px solid ${C.border}`, background:C.cardAlt }}>
+                <div style={{ color:C.worldGold, fontSize:10, fontWeight:700, letterSpacing:1 }}>WORLD</div>
+                <div style={{ color:C.richLight, fontSize:10, fontWeight:700, letterSpacing:1 }}>RICHMOND</div>
+              </div>
+              <div style={{ padding:"0 16px" }}>
+                {/* Live preview */}
+                {(selectedSinglesWorld||selectedSinglesRichmond) && (
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", padding:"8px 0",
+                    borderBottom:`1px solid ${C.border}`, opacity:0.6 }}>
+                    <div style={{ color:C.worldGold, fontSize:13, fontWeight:700 }}>
+                      {selectedSinglesWorld ? (() => { const p=ALL_PLAYERS.find(x=>x.id===selectedSinglesWorld); return p?p.name.split(' ')[0][0]+'. '+p.name.split(' ')[1]:''; })() : <span style={{color:C.muted,fontSize:11}}>picking...</span>}
+                    </div>
+                    <div style={{ color:C.richLight, fontSize:13, fontWeight:700 }}>
+                      {selectedSinglesRichmond ? (() => { const p=ALL_PLAYERS.find(x=>x.id===selectedSinglesRichmond); return p?p.name.split(' ')[0][0]+'. '+p.name.split(' ')[1]:''; })() : <span style={{color:C.muted,fontSize:11}}>picking...</span>}
+                    </div>
+                  </div>
+                )}
+                {singles.length===0 && !selectedSinglesWorld && !selectedSinglesRichmond &&
+                  <div style={{color:C.muted,fontSize:12,textAlign:"center",padding:"16px 0"}}>No matchups yet</div>}
+                {singles.map((m,i) => {
+                  const wp=ALL_PLAYERS.find(x=>x.id===m.world); const rp=ALL_PLAYERS.find(x=>x.id===m.richmond);
+                  const wn=wp?wp.name.split(' ')[0][0]+'. '+wp.name.split(' ')[1]:m.world;
+                  const rn=rp?rp.name.split(' ')[0][0]+'. '+rp.name.split(' ')[1]:m.richmond;
+                  const diff=draftGetHCByTee(m.world,"white")-draftGetHCByTee(m.richmond,"white");
+                  const s=Math.min(Math.abs(diff),9); const st=diff>0?"world":diff<0?"richmond":"none";
+                  return (
+                    <div key={i} style={{ display:"grid", gridTemplateColumns:"1fr 1fr", padding:"8px 0",
+                      borderBottom:i<singles.length-1?`1px solid ${C.border}`:"none", alignItems:"center" }}>
+                      <div>
+                        <div style={{ color:C.worldGold, fontWeight:700, fontSize:13 }}>{wn}</div>
+                        {st==="world"&&s>0&&<div style={{fontSize:10,color:C.worldGold,opacity:0.7}}>+{s} strokes</div>}
+                      </div>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                        <div>
+                          <div style={{ color:C.richLight, fontWeight:700, fontSize:13 }}>{rn}</div>
+                          {st==="richmond"&&s>0&&<div style={{fontSize:10,color:C.richLight,opacity:0.7}}>+{s} strokes</div>}
+                        </div>
+                        <button onClick={()=>removeSinglesMatch(i)}
+                          style={{background:"none",border:"none",color:C.muted,cursor:"pointer",fontSize:14}}>✕</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {/* Finalize singles */}
+            {!singlesFinalized && (
+              <div style={{ textAlign:"center" }}>
+                <div style={{ color:C.muted, fontSize:12, marginBottom:12 }}>
+                  {singles.length===8 ? "All 8 matchups set — ready to finalize" : `${singles.length} of 8 matchups complete`}
+                </div>
+                <button onClick={finalizeSingles} disabled={singlesSaving||singles.length!==8}
+                  style={{ padding:"16px 48px", borderRadius:10, border:"none",
+                    background:singles.length===8?"#f5be00":C.cardAlt,
+                    color:singles.length===8?"#051c1f":C.muted,
+                    fontWeight:800, fontSize:16, cursor:"pointer" }}>
+                  {singlesSaving?"Saving...":"Finalize & Push to App"}
+                </button>
+              </div>
+            )}
+            {singlesFinalized && <div style={{textAlign:"center",color:"#15803d",fontSize:16,fontWeight:700}}>
+              ✓ Singles saved! The main app is now updated.
+            </div>}
+          </div>
+        </div>
+        ) : (
+        /* ── DAY 1 TEAM DRAFT ── */
+        <React.Fragment>
         {/* Left — player pools */}
         <div style={{ width:260, background:C.card, borderRight:`1px solid ${C.border}`, overflowY:"auto", flexShrink:0 }}>
           <div style={{ padding:"12px 14px", borderBottom:`1px solid ${C.border}` }}>
@@ -3245,6 +3451,8 @@ function DraftRoom({ darkMode }) {
             </div>
           )}
         </div>
+        </React.Fragment>
+        )}
       </div>
     </div>
   );
