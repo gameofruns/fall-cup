@@ -2907,9 +2907,9 @@ const DRAFT_SESSIONS = [
 const WORLD_PLAYERS_DRAFT   = ALL_PLAYERS.filter(p=>p.team==="world"    && !p.alumni);
 const RICHMOND_PLAYERS_DRAFT = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.alumni);
 
-function getHC(id) { return ALL_PLAYERS.find(p=>p.id===id)?.handicap ?? 0; }
+function draftGetHC(id) { return ALL_PLAYERS.find(p=>p.id===id)?.handicap ?? 0; }
 
-function calcStrokes(wIds, rIds, fmt) {
+function draftCalcStrokes(wIds, rIds, fmt) {
   const hcs = ids => ids.map(getHC);
   function teamHC(ids) {
     const [lo, hi] = [...hcs(ids)].sort((a,b)=>a-b);
@@ -3002,7 +3002,7 @@ function DraftRoom({ darkMode }) {
         const fmtKey = FORMAT_KEYS[sid];
         matches.forEach((m,i)=>{
           if (!ids[i]) return;
-          const {strokes,strokesTo} = calcStrokes(m.world, m.richmond, fmtKey);
+          const {strokes,strokesTo} = draftCalcStrokes(m.world, m.richmond, fmtKey);
           rows.push({ id:ids[i], world:m.world, richmond:m.richmond, strokes, strokesTo });
         });
       }
@@ -3168,7 +3168,7 @@ function DraftRoom({ darkMode }) {
                     {matches.length===0 && <div style={{color:C.muted,fontSize:12,textAlign:"center",padding:"8px 0"}}>No pairings yet</div>}
                     {matches.map((m,i)=>{
                       const fmtKey = {s1:"scramble",s2:"alt",s3:"captains",s4:"modalt"}[sess.id];
-                      const {strokes,strokesTo} = calcStrokes(m.world, m.richmond, fmtKey);
+                      const {strokes,strokesTo} = draftCalcStrokes(m.world, m.richmond, fmtKey);
                       const wNames = m.world.map(id=>ALL_PLAYERS.find(p=>p.id===id)?.name?.split(" ")[1]||id).join(" & ");
                       const rNames = m.richmond.map(id=>ALL_PLAYERS.find(p=>p.id===id)?.name?.split(" ")[1]||id).join(" & ");
                       return (
