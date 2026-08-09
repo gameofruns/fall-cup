@@ -791,6 +791,8 @@ function HoleScorer({ match, onClose, onUpdate, onLiveUpdate }) {
     for (let i = idx + 1; i < match.holes.length; i++) updated[i] = null;
     setHoles(updated);
     if (onLiveUpdate) onLiveUpdate(updated);
+    // Autosave to Supabase on every tap
+    onUpdate({ ...match, holes: updated });
   }
 
   const lead = live.lead ?? 0;
@@ -798,7 +800,7 @@ function HoleScorer({ match, onClose, onUpdate, onLiveUpdate }) {
 
   return (
     <div style={{ position:"fixed", inset:0, background:"rgba(5,12,25,0.75)", zIndex:200, display:"flex", alignItems:"flex-end" }} onClick={onClose}>
-      <div onClick={e => e.stopPropagation()} style={{ background:C.card, width:"100%", borderRadius:"18px 18px 0 0", maxHeight:"92vh", overflowY:"auto", boxShadow:"0 -8px 40px rgba(0,0,0,0.2)" }}>
+      <div onClick={e => e.stopPropagation()} style={{ background:C.card, width:"100%", borderRadius:"18px 18px 0 0", maxHeight:"88vh", overflowY:"auto", boxShadow:"0 -8px 40px rgba(0,0,0,0.2)", paddingBottom:"env(safe-area-inset-bottom, 16px)" }}>
         <div style={{ position:"sticky", top:0, background:C.card, zIndex:10, padding:"16px 16px 12px", borderBottom:`1px solid ${C.border}` }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
@@ -875,7 +877,7 @@ function HoleScorer({ match, onClose, onUpdate, onLiveUpdate }) {
         </div>
 
         <div style={{ padding:"8px 16px 32px", position:"sticky", bottom:0, background:C.card, borderTop:`1px solid ${C.border}` }}>
-          <button onClick={() => { onUpdate({...match,holes}); onClose(); }} style={{ width:"100%", padding:14, borderRadius:12, border:"none", background:`linear-gradient(135deg, ${C.accent}, #0d6644)`, color:"#fff", fontWeight:800, fontSize:15, cursor:"pointer" }}>Save Scores</button>
+          <button onClick={onClose} style={{ width:"100%", padding:14, borderRadius:12, border:"none", background:C.cardAlt, color:C.muted, fontWeight:700, fontSize:14, cursor:"pointer", border:`1px solid ${C.border}` }}>Close</button>
         </div>
       </div>
     </div>
@@ -1519,116 +1521,42 @@ function HistoryTab({ darkMode }) {
           </div>
         );
       })}
-      {/* Venue map — verified GPS coordinates from Google Maps */}
-      {(() => {
-        const venues = [
-          { name:"Hollows",       city:"Montpelier",   lat:37.7895, lng:-77.5971, years:[2017,2023] },
-          { name:"Meadows Farms", city:"Locust Grove", lat:38.3458, lng:-77.7770, years:[2018] },
-          { name:"Piankatank",    city:"Hartfield",    lat:37.5539, lng:-76.4800, years:[2019] },
-          { name:"Providence",    city:"Chesterfield", lat:37.4816, lng:-77.5556, years:[2020,2024] },
-          { name:"Hunting Hawk",  city:"Glen Allen",   lat:37.7132, lng:-77.6218, years:[2021] },
-          { name:"Birkdale",      city:"Chesterfield", lat:37.3875, lng:-77.6702, years:[2022] },
-          { name:"Dogwood Trace", city:"Petersburg",   lat:37.1888, lng:-77.3969, years:[2025] },
-          { name:"Wintergreen",   city:"Nelson Co.",   lat:37.9239, lng:-78.9493, years:[2026] },
-        ];
-        const W=320, H=200;
-        const LAT_MIN=37.0, LAT_MAX=38.6, LNG_MIN=-79.4, LNG_MAX=-76.0;
-        const toX = l => Math.round(((l-LNG_MIN)/(LNG_MAX-LNG_MIN))*W);
-        const toY = l => Math.round(((LAT_MAX-l)/(LAT_MAX-LAT_MIN))*H);
-        const bg = darkMode ? "#0d1f2e" : "#dce8f0";
-        const land = darkMode ? "#16323a" : "#c8e0d8";
-        const gridC = darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)";
-        const labelC = darkMode ? "#94a3b8" : "#1e3a5f";
-
-        return (
-          <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, marginTop:20, overflow:"hidden" }}>
-            <div style={{ padding:"10px 14px 6px", color:C.muted, fontSize:10, fontWeight:700, letterSpacing:2, textTransform:"uppercase" }}>
-              Fall Cup Venues · 2017–2026
+      {/* Google My Maps embed */}
+      <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, marginTop:20, overflow:"hidden" }}>
+        <div style={{ padding:"10px 14px 8px", color:C.muted, fontSize:10, fontWeight:700, letterSpacing:2, textTransform:"uppercase" }}>
+          Fall Cup Venues · 2017–2026
+        </div>
+        <div style={{ position:"relative", paddingBottom:"65%", height:0, overflow:"hidden" }}>
+          <iframe
+            src="https://www.google.com/maps/d/u/0/embed?mid=1yMal6XlItQzUSdwPoEVhtelIN-Z08fU&ehbc=2E312F&noprof=1"
+            style={{ position:"absolute", top:0, left:0, width:"100%", height:"100%", border:"none", display:"block" }}
+            title="Fall Cup Venues"
+          />
+        </div>
+        <div style={{ padding:"8px 14px 12px" }}>
+          {[
+            { name:"The Hollows GC",        city:"Montpelier, VA",   years:[2017,2023] },
+            { name:"Meadows Farms GC",      city:"Locust Grove, VA", years:[2018] },
+            { name:"Piankatank River GC",   city:"Hartfield, VA",    years:[2019] },
+            { name:"Providence GC",         city:"Chesterfield, VA", years:[2020,2024] },
+            { name:"Hunting Hawk GC",       city:"Glen Allen, VA",   years:[2021] },
+            { name:"Birkdale GC",           city:"Chesterfield, VA", years:[2022] },
+            { name:"Dogwood Trace GC",      city:"Petersburg, VA",   years:[2025] },
+            { name:"Wintergreen Resort",    city:"Wintergreen, VA",  years:[2026] },
+          ].map((v,i,arr) => (
+            <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
+              padding:"5px 0", borderBottom:i<arr.length-1?`1px solid ${C.border}`:"none" }}>
+              <div>
+                <span style={{ fontSize:11, fontWeight:600, color:v.years.includes(2026)?C.worldGold:C.text }}>{v.name}</span>
+                <span style={{ fontSize:10, color:C.muted, marginLeft:6 }}>{v.city}</span>
+              </div>
+              <span style={{ fontSize:10, color:v.years.includes(2026)?C.worldGold:C.muted, fontWeight:v.years.includes(2026)?700:500 }}>
+                {v.years.join(", ")}
+              </span>
             </div>
-            <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display:"block" }}>
-              {/* Ocean/background */}
-              <rect width={W} height={H} fill={darkMode?"#0d1f2e":"#c8dce8"}/>
-              {/* Virginia land mass — approximate polygon using verified corner points */}
-              <polygon points={[
-                // Western VA (mountains)
-                [toX(-80.0),toY(37.2)],[toX(-79.5),toY(36.6)],
-                // Southern border
-                [toX(-77.2),toY(36.6)],[toX(-75.9),toY(36.6)],
-                // Eastern shore / coast
-                [toX(-75.6),toY(37.1)],[toX(-76.0),toY(37.5)],
-                [toX(-76.3),toY(37.6)],[toX(-76.9),toY(37.4)],
-                // Northern Neck
-                [toX(-76.5),toY(38.0)],[toX(-77.1),toY(38.4)],
-                // Northern border
-                [toX(-77.5),toY(38.6)],[toX(-78.5),toY(38.6)],
-                [toX(-79.0),toY(38.5)],[toX(-80.0),toY(38.3)],
-                [toX(-80.0),toY(37.2)],
-              ].map(([x,y])=>`${x},${y}`).join(" ")}
-                fill={darkMode?"#1a3a2a":"#c8dcb8"} stroke={darkMode?"#2a5a3a":"#a0b890"} strokeWidth={1}/>
-              {/* Chesapeake Bay cutout approximation */}
-              <polygon points={[
-                [toX(-76.0),toY(36.9)],[toX(-76.2),toY(37.2)],
-                [toX(-76.4),toY(37.8)],[toX(-76.6),toY(38.3)],
-                [toX(-76.3),toY(38.3)],[toX(-76.2),toY(37.9)],
-                [toX(-75.9),toY(37.3)],[toX(-75.8),toY(36.9)],
-              ].map(([x,y])=>`${x},${y}`).join(" ")}
-                fill={darkMode?"#0d1f2e":"#c8dce8"}/>
-              {/* State label */}
-              <text x={toX(-78.0)} y={toY(37.8)} textAnchor="middle" fontSize={9} 
-                fill={darkMode?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.12)"} fontWeight="700" fontStyle="italic">VIRGINIA</text>
-              {/* Venue pins */}
-              {venues.map((v,i) => {
-                const x=toX(v.lng), y=toY(v.lat);
-                const isCurrent=v.years.includes(2026);
-                const isMulti=v.years.length>1;
-                const pinColor=isCurrent?"#f5be00":isMulti?"#4a90d9":"#194347";
-                // Per-venue label offsets to avoid overlaps
-                const offsets = {
-                  "Hollows":      {dx:0,  dy:-10, anchor:"middle"},
-                  "Meadows Farms":{dx:0,  dy:-10, anchor:"middle"},
-                  "Piankatank":   {dx:8,  dy:0,   anchor:"start"},
-                  "Providence":   {dx:-8, dy:-10, anchor:"end"},
-                  "Hunting Hawk": {dx:0,  dy:14,  anchor:"middle"},
-                  "Birkdale":     {dx:-8, dy:0,   anchor:"end"},
-                  "Dogwood Trace":{dx:8,  dy:10,  anchor:"start"},
-                  "Wintergreen":  {dx:0,  dy:14,  anchor:"middle"},
-                };
-                const off = offsets[v.name] || {dx:0, dy:-10, anchor:"middle"};
-                return (
-                  <g key={i}>
-                    <circle cx={x} cy={y} r={isCurrent?6:4} fill={pinColor} stroke="#fff" strokeWidth={1.5}/>
-                    {isCurrent&&<text x={x} y={y+3.5} textAnchor="middle" fontSize={6} fill="#194347" fontWeight="900">★</text>}
-                    <text x={x+off.dx} y={y+off.dy} textAnchor={off.anchor} fontSize={6.5} fill={labelC} fontWeight="700">{v.name}</text>
-                    <text x={x+off.dx} y={y+off.dy+8} textAnchor={off.anchor} fontSize={5} fill={labelC} opacity={0.6}>{v.years.join(", ")}</text>
-                  </g>
-                );
-              })}
-              {/* Compass */}
-              <text x={W-8} y={12} textAnchor="middle" fontSize={9} fill={labelC} fontWeight="700" opacity={0.5}>N</text>
-              <line x1={W-8} y1={14} x2={W-8} y2={22} stroke={labelC} strokeWidth={0.8} opacity={0.4}/>
-            </svg>
-            <div style={{ padding:"6px 14px 6px", display:"flex", gap:12, fontSize:9, color:C.muted, flexWrap:"wrap" }}>
-              <span><span style={{color:"#f5be00"}}>★</span> 2026 venue</span>
-              <span><span style={{color:"#4a90d9"}}>●</span> 2× visited</span>
-              <span><span style={{color:"#194347",background:"#194347",borderRadius:"50%",display:"inline-block",width:7,height:7}}> </span> 1× visited</span>
-            </div>
-            <div style={{ padding:"0 14px 12px" }}>
-              {venues.map((v,i)=>(
-                <div key={i} style={{ display:"flex", justifyContent:"space-between",
-                  padding:"5px 0", borderBottom:i<venues.length-1?`1px solid ${C.border}`:"none" }}>
-                  <div>
-                    <span style={{ fontSize:11, fontWeight:600, color:v.years.includes(2026)?C.worldGold:C.text }}>{v.name}</span>
-                    <span style={{ fontSize:10, color:C.muted, marginLeft:6 }}>{v.city}, VA</span>
-                  </div>
-                  <span style={{ fontSize:10, color:v.years.includes(2026)?C.worldGold:C.muted, fontWeight:v.years.includes(2026)?700:500 }}>
-                    {v.years.join(", ")}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })()}
+          ))}
+        </div>
+      </div>
       </>}
     </div>
   );
