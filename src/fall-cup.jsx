@@ -2895,6 +2895,334 @@ function Header({ totals, year, darkMode, onToggleDark, expanded, onToggleExpand
   );
 }
 
+
+// ── DRAFT ROOM ────────────────────────────────────────────────────────────────
+const DRAFT_SESSIONS = [
+  { id:"s1", label:"Session 1", format:"Texas Scramble",       day:"Friday",   slots:4 },
+  { id:"s2", label:"Session 2", format:"Alternate Shot",       day:"Friday",   slots:4 },
+  { id:"s3", label:"Session 3", format:"Captain\'s Choice",   day:"Friday",   slots:4 },
+  { id:"s4", label:"Session 4", format:"Mod. Alternate Shot",  day:"Friday",   slots:4 },
+];
+
+const WORLD_PLAYERS_DRAFT   = ALL_PLAYERS.filter(p=>p.team==="world"    && !p.alumni);
+const RICHMOND_PLAYERS_DRAFT = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.alumni);
+
+function getHC(id) { return ALL_PLAYERS.find(p=>p.id===id)?.handicap ?? 0; }
+
+function calcStrokes(wIds, rIds, fmt) {
+  const hcs = ids => ids.map(getHC);
+  function teamHC(ids) {
+    const [lo, hi] = [...hcs(ids)].sort((a,b)=>a-b);
+    if (fmt==="scramble")  return Math.ceil((lo+hi)/2);
+    if (fmt==="alt")       return Math.round(lo*0.6)+Math.round(hi*0.4);
+    if (fmt==="captains")  return Math.round(lo*0.5)+Math.round(hi*0.25);
+    if (fmt==="modalt")    return Math.round(lo*0.75)+Math.round(hi*0.25);
+    return lo;
+  }
+  const fmtKey = fmt==="Texas Scramble"?"scramble":fmt==="Alternate Shot"?"alt":fmt==="Captain\'s Choice"?"captains":"modalt";
+  const diff = teamHC(wIds) - teamHC(rIds);
+  return { strokes:Math.abs(diff), strokesTo: diff>0?"world":diff<0?"richmond":"none" };
+}
+
+function DraftRoom({ darkMode }) {
+  C = makeColors(darkMode);
+  const [pin, setPin] = useState("");
+  const [authed, setAuthed] = useState(false);
+  const [pinError, setPinError] = useState(false);
+
+  // Draft state: { s1:[{world:[id,id], richmond:[id,id]}, ...], s2:[], ... }
+  const [draft, setDraft] = useState({ s1:[], s2:[], s3:[], s4:[] });
+
+  // Current pick state
+  const [activeSession, setActiveSession] = useState("s1");
+  const [pickingTeam, setPickingTeam] = useState("world"); // world picks first
+  const [selectedWorld, setSelectedWorld] = useState([]);
+  const [selectedRichmond, setSelectedRichmond] = useState([]);
+  const [firstPick, setFirstPick] = useState("world"); // who picked first this session
+  const [finalized, setFinalized] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  // Track used players per session
+  function usedInSession(sid) {
+    const matches = draft[sid] || [];
+    const w = matches.flatMap(m=>m.world);
+    const r = matches.flatMap(m=>m.richmond);
+    return { world:new Set(w), richmond:new Set(r) };
+  }
+
+  function currentSessionFull(sid) {
+    return (draft[sid]||[]).length >= 4;
+  }
+
+  const used = usedInSession(activeSession);
+  const activeSess = DRAFT_SESSIONS.find(s=>s.id===activeSession);
+
+  function togglePlayer(team, id) {
+    if (team==="world") {
+      if (pickingTeam!=="world") return;
+      setSelectedWorld(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id].slice(-2));
+    } else {
+      if (pickingTeam!=="richmond") return;
+      setSelectedRichmond(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id].slice(-2));
+    }
+  }
+
+  function lockPairing() {
+    if (selectedWorld.length!==2||selectedRichmond.length!==2) return;
+    const newMatch = { world:selectedWorld, richmond:selectedRichmond };
+    const updated = { ...draft, [activeSession]:[...(draft[activeSession]||[]), newMatch] };
+    setDraft(updated);
+    setSelectedWorld([]);
+    setSelectedRichmond([]);
+    // Alternate who picks next (snake)
+    setPickingTeam(t=>t==="world"?"richmond":"world");
+  }
+
+  function removeMatch(sid, idx) {
+    const updated = { ...draft, [sid]:draft[sid].filter((_,i)=>i!==idx) };
+    setDraft(updated);
+  }
+
+  async function finalize() {
+    setSaving(true);
+    try {
+      // Build match updates for sessions 1-4
+      const SESSION_MATCH_IDS = {
+        s1:["26m1a","26m1b","26m1c","26m1d"],
+        s2:["26m2a","26m2b","26m2c","26m2d"],
+        s3:["26m3a","26m3b","26m3c","26m3d"],
+        s4:["26m4a","26m4b","26m4c","26m4d"],
+      };
+      const FORMAT_KEYS = { s1:"scramble", s2:"alt", s3:"captains", s4:"modalt" };
+      const rows = [];
+      for (const sid of ["s1","s2","s3","s4"]) {
+        const matches = draft[sid]||[];
+        const ids = SESSION_MATCH_IDS[sid];
+        const fmtKey = FORMAT_KEYS[sid];
+        matches.forEach((m,i)=>{
+          if (!ids[i]) return;
+          const {strokes,strokesTo} = calcStrokes(m.world, m.richmond, fmtKey);
+          rows.push({ id:ids[i], world:m.world, richmond:m.richmond, strokes, strokesTo });
+        });
+      }
+      // Save pairing data to Supabase in a new table
+      await fetch(`${SUPABASE_URL}/rest/v1/match_pairings`, {
+        method:"POST",
+        headers:{ apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`,
+          "Content-Type":"application/json", Prefer:"resolution=merge-duplicates" },
+        body: JSON.stringify(rows),
+      });
+      setSaved(true);
+      setFinalized(true);
+    } catch(e) {
+      alert("Save failed: " + e.message);
+    }
+    setSaving(false);
+  }
+
+  if (!authed) return (
+    <div style={{ minHeight:"100vh", background:"#051c1f", display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <div style={{ background:"#0d2d32", borderRadius:16, padding:"32px 28px", width:280, textAlign:"center" }}>
+        <div style={{ color:"#f5be00", fontSize:13, fontWeight:700, letterSpacing:2, marginBottom:8 }}>DRAFT ROOM</div>
+        <div style={{ color:"white", fontSize:22, fontWeight:900, marginBottom:24 }}>Fall Cup 2026</div>
+        <input value={pin} onChange={e=>setPin(e.target.value)} onKeyDown={e=>e.key==="Enter"&&(pin==="2026"?setAuthed(true):setPinError(true))}
+          type="password" placeholder="Enter PIN" maxLength={4}
+          style={{ width:"100%", padding:"12px 14px", borderRadius:8, border:`1px solid ${pinError?"#dc2626":"rgba(255,255,255,0.15)"}`,
+            background:"rgba(255,255,255,0.08)", color:"white", fontSize:18, textAlign:"center",
+            outline:"none", boxSizing:"border-box", marginBottom:12, letterSpacing:8 }} />
+        {pinError && <div style={{color:"#dc2626",fontSize:12,marginBottom:8}}>Incorrect PIN</div>}
+        <button onClick={()=>pin==="2026"?setAuthed(true):setPinError(true)}
+          style={{ width:"100%", padding:"12px", borderRadius:8, border:"none", background:"#f5be00",
+            color:"#051c1f", fontWeight:800, fontSize:14, cursor:"pointer" }}>Enter</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"Oswald, sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap');`}</style>
+
+      {/* Header */}
+      <div style={{ background:"#194347", padding:"16px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <div>
+          <div style={{ background:"#f5be00", borderRadius:4, padding:"2px 8px", display:"inline-block", marginBottom:6 }}>
+            <span style={{ fontSize:10, fontWeight:900, letterSpacing:3, color:"#051c1f" }}>2026</span>
+          </div>
+          <div style={{ color:"white", fontSize:28, fontWeight:900, letterSpacing:2 }}>FALL CUP · DRAFT ROOM</div>
+          <div style={{ color:"rgba(255,255,255,0.5)", fontSize:12, letterSpacing:2 }}>THURSDAY NIGHT · PAIRINGS SELECTION</div>
+        </div>
+        {saved && <div style={{ background:"#15803d", color:"white", borderRadius:8, padding:"10px 20px", fontWeight:700 }}>
+          ✓ Saved to App
+        </div>}
+      </div>
+
+      <div style={{ display:"flex", gap:0, height:"calc(100vh - 90px)" }}>
+
+        {/* Left — player pools */}
+        <div style={{ width:260, background:C.card, borderRight:`1px solid ${C.border}`, overflowY:"auto", flexShrink:0 }}>
+          <div style={{ padding:"12px 14px", borderBottom:`1px solid ${C.border}` }}>
+            <div style={{ fontSize:10, fontWeight:700, letterSpacing:2, color:C.muted, marginBottom:8 }}>NOW PICKING</div>
+            <div style={{ display:"flex", gap:8 }}>
+              <div style={{ flex:1, textAlign:"center", padding:"8px 4px", borderRadius:8,
+                background: pickingTeam==="world" ? C.worldBg : "transparent",
+                border: `2px solid ${pickingTeam==="world" ? C.worldGold : C.border}` }}>
+                <div style={{ color:C.worldGold, fontWeight:700, fontSize:12 }}>WORLD</div>
+                <div style={{ color:C.muted, fontSize:10 }}>picks {pickingTeam==="world"?"pair":"opponent"}</div>
+              </div>
+              <div style={{ flex:1, textAlign:"center", padding:"8px 4px", borderRadius:8,
+                background: pickingTeam==="richmond" ? C.richBg : "transparent",
+                border: `2px solid ${pickingTeam==="richmond" ? C.richLight : C.border}` }}>
+                <div style={{ color:C.richLight, fontWeight:700, fontSize:12 }}>RICHMOND</div>
+                <div style={{ color:C.muted, fontSize:10 }}>picks {pickingTeam==="richmond"?"pair":"opponent"}</div>
+              </div>
+            </div>
+            <div style={{ marginTop:10, fontSize:10, color:C.muted }}>
+              First pick this session: <span style={{ fontWeight:700, color:firstPick==="world"?C.worldGold:C.richLight }}>{firstPick==="world"?"World":"Richmond"}</span>
+            </div>
+            <button onClick={()=>setFirstPick(p=>p==="world"?"richmond":"world")}
+              style={{ marginTop:6, width:"100%", padding:"6px", borderRadius:6, border:`1px solid ${C.border}`,
+                background:"transparent", color:C.muted, fontSize:11, cursor:"pointer" }}>
+              Swap first pick
+            </button>
+          </div>
+
+          {/* World players */}
+          <div style={{ padding:"10px 14px 6px" }}>
+            <div style={{ color:C.worldGold, fontSize:10, fontWeight:700, letterSpacing:2, marginBottom:6 }}>TEAM WORLD</div>
+            {WORLD_PLAYERS_DRAFT.map(p=>{
+              const inUse = used.world.has(p.id);
+              const selected = selectedWorld.includes(p.id);
+              return (
+                <button key={p.id} onClick={()=>!inUse&&togglePlayer("world",p.id)}
+                  style={{ width:"100%", padding:"8px 10px", marginBottom:4, borderRadius:8, border:`2px solid ${selected?C.worldGold:inUse?C.border:"transparent"}`,
+                    background: selected?C.worldBg:inUse?C.cardAlt:C.cardAlt,
+                    color: inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
+                    display:"flex", justifyContent:"space-between", alignItems:"center", opacity:inUse?0.4:1 }}>
+                  <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
+                  <span style={{ fontSize:11, color:C.muted }}>HC {p.handicap}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Richmond players */}
+          <div style={{ padding:"10px 14px 6px" }}>
+            <div style={{ color:C.richLight, fontSize:10, fontWeight:700, letterSpacing:2, marginBottom:6 }}>TEAM RICHMOND</div>
+            {RICHMOND_PLAYERS_DRAFT.map(p=>{
+              const inUse = used.richmond.has(p.id);
+              const selected = selectedRichmond.includes(p.id);
+              return (
+                <button key={p.id} onClick={()=>!inUse&&togglePlayer("richmond",p.id)}
+                  style={{ width:"100%", padding:"8px 10px", marginBottom:4, borderRadius:8, border:`2px solid ${selected?C.richLight:inUse?C.border:"transparent"}`,
+                    background: selected?C.richBg:inUse?C.cardAlt:C.cardAlt,
+                    color: inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
+                    display:"flex", justifyContent:"space-between", alignItems:"center", opacity:inUse?0.4:1 }}>
+                  <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
+                  <span style={{ fontSize:11, color:C.muted }}>HC {p.handicap}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Lock pairing button */}
+          <div style={{ padding:"12px 14px", borderTop:`1px solid ${C.border}` }}>
+            <button onClick={lockPairing}
+              disabled={selectedWorld.length!==2||selectedRichmond.length!==2}
+              style={{ width:"100%", padding:"12px", borderRadius:8, border:"none",
+                background: selectedWorld.length===2&&selectedRichmond.length===2 ? C.accent : C.cardAlt,
+                color: selectedWorld.length===2&&selectedRichmond.length===2 ? "white" : C.muted,
+                fontWeight:800, fontSize:14, cursor:"pointer" }}>
+              Lock Pairing →
+            </button>
+            {selectedWorld.length===2&&selectedRichmond.length!==2&&
+              <div style={{color:C.richLight,fontSize:11,marginTop:6,textAlign:"center"}}>Now pick Richmond pair</div>}
+            {selectedWorld.length!==2&&selectedRichmond.length===0&&
+              <div style={{color:C.worldGold,fontSize:11,marginTop:6,textAlign:"center"}}>Pick 2 World players</div>}
+          </div>
+        </div>
+
+        {/* Right — sessions board */}
+        <div style={{ flex:1, overflowY:"auto", padding:"20px 24px" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:20 }}>
+            {DRAFT_SESSIONS.map(sess=>{
+              const matches = draft[sess.id]||[];
+              const isActive = activeSession===sess.id;
+              const isFull = matches.length>=4;
+              return (
+                <div key={sess.id} onClick={()=>!isFull&&setActiveSession(sess.id)}
+                  style={{ background:C.card, borderRadius:12, border:`2px solid ${isActive?C.accent:isFull?"#15803d":C.border}`,
+                    cursor:isFull?"default":"pointer", overflow:"hidden" }}>
+                  <div style={{ padding:"12px 16px", borderBottom:`1px solid ${C.border}`,
+                    background:isActive?`${C.accent}18`:isFull?"rgba(21,128,61,0.1)":"transparent",
+                    display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div>
+                      <div style={{ fontWeight:800, fontSize:14, color:isActive?C.accent:C.text }}>{sess.label}</div>
+                      <div style={{ fontSize:11, color:C.muted }}>{sess.format} · {sess.day}</div>
+                    </div>
+                    <div style={{ fontSize:11, fontWeight:700, color:isFull?"#15803d":C.muted }}>
+                      {matches.length}/4 {isFull?"✓ DONE":""}
+                    </div>
+                  </div>
+                  <div style={{ padding:"10px 16px" }}>
+                    {matches.length===0 && <div style={{color:C.muted,fontSize:12,textAlign:"center",padding:"8px 0"}}>No pairings yet</div>}
+                    {matches.map((m,i)=>{
+                      const fmtKey = {s1:"scramble",s2:"alt",s3:"captains",s4:"modalt"}[sess.id];
+                      const {strokes,strokesTo} = calcStrokes(m.world, m.richmond, fmtKey);
+                      const wNames = m.world.map(id=>ALL_PLAYERS.find(p=>p.id===id)?.name?.split(" ")[1]||id).join(" & ");
+                      const rNames = m.richmond.map(id=>ALL_PLAYERS.find(p=>p.id===id)?.name?.split(" ")[1]||id).join(" & ");
+                      return (
+                        <div key={i} style={{ padding:"8px 0", borderBottom:i<matches.length-1?`1px solid ${C.border}`:"none",
+                          display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                          <div style={{ flex:1 }}>
+                            <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                              <span style={{ color:C.worldGold, fontWeight:700, fontSize:13 }}>{wNames}</span>
+                              <span style={{ color:C.muted, fontSize:11 }}>vs</span>
+                              <span style={{ color:C.richLight, fontWeight:700, fontSize:13 }}>{rNames}</span>
+                            </div>
+                            {strokes>0 && <div style={{fontSize:10,color:C.muted,marginTop:2}}>
+                              {strokesTo==="world"?"World":"Richmond"} +{strokes} strokes
+                            </div>}
+                          </div>
+                          <button onClick={e=>{e.stopPropagation();removeMatch(sess.id,i)}}
+                            style={{background:"none",border:"none",color:C.muted,cursor:"pointer",fontSize:16,padding:"0 4px"}}>✕</button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Finalize button */}
+          {!finalized && (
+            <div style={{ textAlign:"center", padding:"20px 0" }}>
+              <div style={{ color:C.muted, fontSize:12, marginBottom:12 }}>
+                {["s1","s2","s3","s4"].every(s=>(draft[s]||[]).length===4)
+                  ? "All pairings set — ready to finalize"
+                  : `${["s1","s2","s3","s4"].reduce((n,s)=>n+(draft[s]||[]).length,0)} of 16 pairings complete`}
+              </div>
+              <button onClick={finalize} disabled={saving||!["s1","s2","s3","s4"].every(s=>(draft[s]||[]).length===4)}
+                style={{ padding:"16px 48px", borderRadius:10, border:"none",
+                  background:["s1","s2","s3","s4"].every(s=>(draft[s]||[]).length===4)?"#f5be00":C.cardAlt,
+                  color:["s1","s2","s3","s4"].every(s=>(draft[s]||[]).length===4)?"#051c1f":C.muted,
+                  fontWeight:800, fontSize:16, cursor:"pointer", letterSpacing:1 }}>
+                {saving ? "Saving..." : "Finalize & Push to App"}
+              </button>
+            </div>
+          )}
+          {finalized && (
+            <div style={{ textAlign:"center", padding:"20px 0", color:"#15803d", fontSize:16, fontWeight:700 }}>
+              ✓ Pairings saved! The main app is now updated.
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── APP ───────────────────────────────────────────────────────────────────────
 const SCORE_PIN = "2026";
 const EVENT_DATE = new Date("2026-09-18T08:00:00"); // Friday morning tee time
@@ -3074,6 +3402,10 @@ export default function FallCupApp() {
 
   // liveHoles: while a scorer is open, track hole-by-hole edits so header updates in real time
   const [liveHoles, setLiveHoles] = useState(null); // { matchId, holes }
+
+  // Draft mode — activated via ?mode=draft URL param
+  const isDraftMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("mode") === "draft";
+  if (isDraftMode) return <DraftRoom darkMode={darkMode} />;
 
   if (showLanding) return <Countdown darkMode={darkMode} onEnter={() => setShowLanding(false)} />;
 
