@@ -3386,25 +3386,49 @@ export default function FallCupApp() {
   const [pinEntry, setPinEntry] = useState("");
   const [pinError, setPinError] = useState(false);
 
-  // Load scores from Supabase on mount
+  // Load scores and pairings from Supabase on mount
   useEffect(() => {
-    async function loadScores() {
+    async function loadAll() {
       try {
-        const res = await fetch(
+        // Load hole scores
+        const scoresRes = await fetch(
           `${SUPABASE_URL}/rest/v1/match_holes?select=id,holes`,
           { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
         );
-        const rows = await res.json();
-        if (!Array.isArray(rows)) return;
+        const scores = await scoresRes.json();
+
+        // Load pairings
+        const pairRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/match_pairings?select=id,world,richmond,strokes,strokes_to`,
+          { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+        );
+        const pairings = await pairRes.json();
+
         setMatches2026(prev => prev.map(m => {
-          const row = rows.find(r => r.id === m.id);
-          return row ? { ...m, holes: row.holes } : m;
+          let updated = { ...m };
+          // Apply pairings if available
+          if (Array.isArray(pairings)) {
+            const pair = pairings.find(r => r.id === m.id);
+            if (pair) {
+              updated = { ...updated,
+                teamWorld: pair.world,
+                teamRichmond: pair.richmond,
+                strokes: pair.strokes,
+                strokesTo: pair.strokes_to,
+              };
+            }
+          }
+          // Apply hole scores
+          if (Array.isArray(scores)) {
+            const score = scores.find(r => r.id === m.id);
+            if (score) updated = { ...updated, holes: score.holes };
+          }
+          return updated;
         }));
-      } catch(e) { console.error("Failed to load scores:", e); }
+      } catch(e) { console.error("Failed to load from Supabase:", e); }
     }
-    loadScores();
-    // Poll every 10s for live updates
-    const interval = setInterval(loadScores, 10000);
+    loadAll();
+    const interval = setInterval(loadAll, 10000);
     return () => clearInterval(interval);
   }, []);
 
