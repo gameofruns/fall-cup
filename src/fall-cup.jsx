@@ -1234,8 +1234,8 @@ function StatsTab({ matches }) {
   ];
 
   // Active players only for season stats
-  const worldRows = ALL_PLAYERS.filter(p=>p.team==="world").map(p=>({...p,...pStats(p.id)}));
-  const richRows  = ALL_PLAYERS.filter(p=>p.team==="richmond").map(p=>({...p,...pStats(p.id)}));
+  const worldRows = ALL_PLAYERS.filter(p=>p.team==="world" && !p.alumni).map(p=>({...p,...pStats(p.id)}));
+  const richRows  = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.alumni).map(p=>({...p,...pStats(p.id)}));
 
   return (
     <div style={{ padding:"16px 16px 24px" }}>
@@ -1781,7 +1781,7 @@ function canonFmt(s) {
 }
 
 function computeInsights() {
-  const ACTIVE = new Set(ALL_PLAYERS.map(p => p.id));
+  const ACTIVE = new Set(ALL_PLAYERS.map(p => p.id)); // includes alumni for stats computation
   const worldIds = new Set(ALL_PLAYERS.filter(p=>p.team==="world").map(p=>p.id));
   const richIds  = new Set(ALL_PLAYERS.filter(p=>p.team==="richmond").map(p=>p.id));
   const fmtStats={}, yearStats={}, h2h={}, pairW={}, pairR={}, singles={};
@@ -1828,7 +1828,7 @@ function computeInsights() {
   for (const id of ACTIVE) {
     if (!h2h[id]) continue;
     const entries=Object.entries(h2h[id])
-      .filter(([opp,r])=>ACTIVE.has(opp)&&r.w+r.l+r.h>=3)
+      .filter(([opp,r])=>ACTIVE.has(opp)&&r.w+r.l+r.h>=2)
       .map(([opp,r])=>({opp,rec:r,pct:(r.w+r.h*0.5)/(r.w+r.l+r.h)}));
     if (!entries.length) continue;
     const nemesis=entries.reduce((a,b)=>b.pct<a.pct?b:a);
@@ -2048,7 +2048,7 @@ function computeInsights() {
     for (const [a, bmap] of Object.entries(pairData)) {
       for (const [b, rec] of Object.entries(bmap)) {
         const t = rec.w + rec.l + rec.h;
-        if (t < 2) continue; // need at least 2 together
+        if (t < 1) continue; // need at least 1 match together
         if (a === id) entries.push({ partner: b, rec, pct: (rec.w + rec.h * 0.5) / t });
         if (b === id) entries.push({ partner: a, rec, pct: (rec.w + rec.h * 0.5) / t });
       }
