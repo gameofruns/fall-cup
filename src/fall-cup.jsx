@@ -95,22 +95,23 @@ const FORMATS = {
 // Handicaps = 9-hole course HC from 2025 roster (White tees)
 // Blue / White / Green tees also tracked for future use
 const ALL_PLAYERS = [
-  { id:"jh",  name:"J. Hicks",     team:"world",    hc:8,  hcB:10, hcW:8,  hcG:6 },
-  { id:"rk",  name:"R. Karnes",    team:"world",    hc:2,  hcB:4,  hcW:2,  hcG:1 },
-  { id:"ss",  name:"S. Smith",     team:"world",    hc:7,  hcB:8,  hcW:7,  hcG:5 },
-  { id:"kb",  name:"K. Bauer",     team:"world",    hc:7,  hcB:9,  hcW:7,  hcG:5 },
-  { id:"fs",  name:"F. Smith",     team:"world",    hc:8,  hcB:9,  hcW:8,  hcG:6 },
-  { id:"bs",  name:"B. Settle",    team:"world",    hc:6,  hcB:7,  hcW:6,  hcG:4 },
-  { id:"pl",  name:"P. Limon",     team:"world",    hc:6,  hcB:8,  hcW:6,  hcG:4 },
-  { id:"tg",  name:"T. Grammo",    team:"world",    captain:true, hc:7,  hcB:9,  hcW:7,  hcG:5 },
-  { id:"tp",  name:"T. Perdue",    team:"richmond", captain:true, hc:4,  hcB:5,  hcW:4,  hcG:3 },
-  { id:"jp",  name:"J. Pleasants", team:"richmond", hc:9,  hcB:11, hcW:9,  hcG:7 },
-  { id:"jc",  name:"J. Cummings",  team:"richmond", hc:4,  hcB:5,  hcW:4,  hcG:3 },
-  { id:"cd",  name:"C. Dozier",    team:"richmond", hc:9,  hcB:10, hcW:9,  hcG:7 },
-  { id:"jr",  name:"J. Rabideau",  team:"richmond", hc:12, hcB:14, hcW:12, hcG:10 },
-  { id:"sn",  name:"S. Newton",    team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4 },
-  { id:"bb",  name:"B. Beruete",   team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4 },
-  { id:"ah",  name:"A. Hoy",       team:"richmond", hc:11, hcB:13, hcW:11, hcG:9 },
+  { id:"jh",  name:"J. Hicks",     team:"world",    hc:8,  hcB:10, hcW:8,  hcG:6, hcR:7 },
+  { id:"rk",  name:"R. Karnes",    team:"world",    hc:2,  hcB:4,  hcW:2,  hcG:1, hcR:0 },
+  { id:"ss",  name:"S. Smith",     team:"world",    hc:7,  hcB:8,  hcW:7,  hcG:5, hcR:4 },
+  { id:"kb",  name:"K. Bauer",     team:"world",    hc:7,  hcB:9,  hcW:7,  hcG:5, hcR:5 },
+  { id:"fs",  name:"F. Smith",     team:"world",    hc:8,  hcB:9,  hcW:8,  hcG:6, hcR:4 },
+  { id:"bs",  name:"B. Settle",    team:"world",    hc:6,  hcB:7,  hcW:6,  hcG:4, hcR:3 },
+  { id:"na",  name:"N. Altaffer",  team:"world",    hc:4,  hcB:5,  hcW:4,  hcG:2, hcR:0 },
+  { id:"pl",  name:"P. Limon",     team:"world",    hc:8,  hcB:10, hcW:8,  hcG:6, hcR:4, alumni:true },
+  { id:"tg",  name:"T. Grammo",    team:"world",    captain:true, hc:7,  hcB:9,  hcW:7,  hcG:5, hcR:5 },
+  { id:"tp",  name:"T. Perdue",    team:"richmond", captain:true, hc:4,  hcB:5,  hcW:4,  hcG:3, hcR:2 },
+  { id:"jp",  name:"J. Pleasants", team:"richmond", hc:9,  hcB:11, hcW:9,  hcG:7, hcR:6 },
+  { id:"jc",  name:"J. Cummings",  team:"richmond", hc:4,  hcB:5,  hcW:4,  hcG:3, hcR:3 },
+  { id:"cd",  name:"C. Dozier",    team:"richmond", hc:9,  hcB:10, hcW:9,  hcG:7, hcR:6 },
+  { id:"jr",  name:"J. Rabideau",  team:"richmond", hc:15, hcB:17, hcW:15, hcG:13, hcR:9 },
+  { id:"sn",  name:"S. Newton",    team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4, hcR:2 },
+  { id:"bb",  name:"B. Beruete",   team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4, hcR:2 },
+  { id:"ah",  name:"A. Hoy",       team:"richmond", hc:7, hcB:9, hcW:7, hcG:5, hcR:9 },
 ];
 
 // ── STROKES CALCULATOR ────────────────────────────────────────────────────────
@@ -636,7 +637,7 @@ const HISTORY = [
 // ── 2025 LIVE MATCH DATA (hole-by-hole) ───────────────────────────────────────
 const MATCHES_2025 = [
   { id:"f1a", year:2025, day:"Friday", session:"Session 1", round:"Match 1", format:"scramble", tees:"White", teeTime:"8:00",
-    teamWorld:["pl","tg"], teamRichmond:["tp","jp"], strokes:0,
+    teamWorld:["na","tg"], teamRichmond:["tp","jp"], strokes:0,
     holes:["richmond","richmond","richmond","world","richmond","world","world","richmond","world","world","richmond","world","richmond","world","world","richmond","richmond","richmond"] },
   { id:"f1b", year:2025, day:"Friday", session:"Session 1", round:"Match 1", format:"scramble", tees:"White", teeTime:"8:09",
     teamWorld:["jh","rk"], teamRichmond:["jc","cd"], strokes:2,
@@ -648,7 +649,7 @@ const MATCHES_2025 = [
     teamWorld:["fs","bs"], teamRichmond:["bb","ah"], strokes:1,
     holes:["world","richmond","world","halved","world","richmond","world","world","richmond","world","halved","world","richmond","world","world","richmond","world","world"] },
   { id:"f2a", year:2025, day:"Friday", session:"Session 2", round:"Match 2", format:"alt", tees:"Green",
-    teamWorld:["pl","kb"], teamRichmond:["tp","cd"], strokes:1,
+    teamWorld:["na","kb"], teamRichmond:["tp","cd"], strokes:1,
     holes:["richmond","richmond","world","richmond","halved","richmond","world","richmond","halved","richmond","world","richmond","halved","richmond","world","richmond","richmond","richmond"] },
   { id:"f2b", year:2025, day:"Friday", session:"Session 2", round:"Match 2", format:"alt", tees:"Green",
     teamWorld:["ss","tg"], teamRichmond:["jp","jc"], strokes:1,
@@ -663,7 +664,7 @@ const MATCHES_2025 = [
     teamWorld:["fs","ss"], teamRichmond:["cd","sn"], strokes:1,
     holes:["world","world","world","halved","world","richmond","world","world","halved","world","world","halved","world","world","richmond","world","world","halved"] },
   { id:"s1b", year:2025, day:"Saturday", round:"Match 3 (Sat)", format:"modalt", tees:"White", teeTime:"1:33",
-    teamWorld:["rk","pl"], teamRichmond:["jp","bb"], strokes:3,
+    teamWorld:["rk","na"], teamRichmond:["jp","bb"], strokes:3,
     holes:["world","halved","world","world","richmond","world","halved","world","world","richmond","world","halved","world","world","world","richmond","world","richmond"] },
   { id:"s1c", year:2025, day:"Saturday", round:"Match 3 (Sat)", format:"modalt", tees:"White", teeTime:"1:42",
     teamWorld:["tg","jh"], teamRichmond:["ah","tp"], strokes:1,
@@ -672,7 +673,7 @@ const MATCHES_2025 = [
     teamWorld:["bs","kb"], teamRichmond:["jr","jc"], strokes:0,
     holes:["halved","world","richmond","halved","world","richmond","halved","world","richmond","halved","world","richmond","halved","world","richmond","halved","world","richmond"] },
   { id:"s2a", year:2025, day:"Saturday", session:"Session 4", round:"Match 4", format:"captains", tees:"Blue",
-    teamWorld:["fs","pl"], teamRichmond:["ah","jp"], strokes:3,
+    teamWorld:["fs","na"], teamRichmond:["ah","jp"], strokes:3,
     holes:["world","richmond","halved","world","richmond","world","halved","richmond","world","world","richmond","halved","world","richmond","world","halved","richmond","world"] },
   { id:"s2b", year:2025, day:"Saturday", session:"Session 4", round:"Match 4", format:"captains", tees:"Blue",
     teamWorld:["rk","ss"], teamRichmond:["bb","tp"], strokes:0,
@@ -692,41 +693,41 @@ const MATCHES_2025 = [
 const MATCHES_2026 = [
   // ── MATCH 1 — Texas Scramble — Friday Front 9 ────────────────────────────
   { id:"26m1a", year:2026, day:"Friday", session:"Session 1", match:"Match 1", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["pl","tg"], teamRichmond:["jp","bb"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["na","tg"], teamRichmond:["jp","bb"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m1b", year:2026, day:"Friday", session:"Session 1", match:"Match 2", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["fs","kb"], teamRichmond:["sn","jc"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["fs","kb"], teamRichmond:["sn","jc"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
   { id:"26m1c", year:2026, day:"Friday", session:"Session 1", match:"Match 3", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["jh","bs"], teamRichmond:["tp","jr"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
   { id:"26m1d", year:2026, day:"Friday", session:"Session 1", match:"Match 4", format:"captains", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["rk","ss"], teamRichmond:["ah","cd"], strokes:4, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["rk","ss"], teamRichmond:["ah","cd"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 2 — Alternate Shot — Friday Back 9 ─────────────────────────────
   { id:"26m2a", year:2026, day:"Friday", session:"Session 2", match:"Match 5", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
-    teamWorld:["pl","bs"], teamRichmond:["sn","cd"], strokes:1, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["na","bs"], teamRichmond:["sn","cd"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m2b", year:2026, day:"Friday", session:"Session 2", match:"Match 6", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
     teamWorld:["jh","tg"], teamRichmond:["jc","bb"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m2c", year:2026, day:"Friday", session:"Session 2", match:"Match 7", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
-    teamWorld:["ss","fs"], teamRichmond:["tp","jr"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["ss","fs"], teamRichmond:["tp","jr"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
   { id:"26m2d", year:2026, day:"Friday", session:"Session 2", match:"Match 8", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Gold", venue:"Devil's Knob",
-    teamWorld:["kb","rk"], teamRichmond:["ah","jp"], strokes:4, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["kb","rk"], teamRichmond:["ah","jp"], strokes:7, strokesTo:"richmond", holes:Array(9).fill(null) },
 
   // ── MATCH 3 — Captain's Choice — Friday Front 9 ──────────────────────────
   { id:"26m3a", year:2026, day:"Friday", session:"Session 3", match:"Match 9", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
     teamWorld:["bs","jh"], teamRichmond:["ah","jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m3b", year:2026, day:"Friday", session:"Session 3", match:"Match 10", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["kb","pl"], teamRichmond:["jr","tp"], strokes:1, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["kb","na"], teamRichmond:["jr","tp"], strokes:4, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m3c", year:2026, day:"Friday", session:"Session 3", match:"Match 11", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["rk","ss"], teamRichmond:["jc","bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
+    teamWorld:["rk","ss"], teamRichmond:["jc","bb"], strokes:1, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m3d", year:2026, day:"Friday", session:"Session 3", match:"Match 12", format:"scramble", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Devil's Knob",
-    teamWorld:["fs","tg"], teamRichmond:["cd","sn"], strokes:1, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["fs","tg"], teamRichmond:["cd","sn"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
 
   // ── MATCH 4 — Singles — Friday Back 9 ────────────────────────────────────
   { id:"26m4a", year:2026, day:"Friday", session:"Session 4", match:"Match 13", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
-    teamWorld:["pl"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["na"], teamRichmond:["ah"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m4b", year:2026, day:"Friday", session:"Session 4", match:"Match 14", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
-    teamWorld:["ss"], teamRichmond:["bb"], strokes:0, strokesTo:"none", holes:Array(9).fill(null) },
+    teamWorld:["ss"], teamRichmond:["bb"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m4c", year:2026, day:"Friday", session:"Session 4", match:"Match 15", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
-    teamWorld:["rk"], teamRichmond:["jr"], strokes:7, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["rk"], teamRichmond:["jr"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m4d", year:2026, day:"Friday", session:"Session 4", match:"Match 16", format:"captains", nine:"Back 9", holeStart:10, totalHoles:9, tees:"Red", venue:"Devil's Knob",
     teamWorld:["kb"], teamRichmond:["sn"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m4e", year:2026, day:"Friday", session:"Session 4", match:"Match 17", format:"modalt", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Devil's Knob",
@@ -741,40 +742,40 @@ const MATCHES_2026 = [
   // ── MATCH 5 — Mod. Alternate Shot — Saturday Front 9 ─────────────────────
   // ── SESSION 5 — Singles — Saturday Front 9 (Stoney Creek) ──────────────
   { id:"26m5a", year:2026, day:"Saturday", session:"Session 5", match:"Match 17", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["jh"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["jh"], teamRichmond:["ah"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m5b", year:2026, day:"Saturday", session:"Session 5", match:"Match 18", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["tg"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["tg"], teamRichmond:["tp"], strokes:4, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m5c", year:2026, day:"Saturday", session:"Session 5", match:"Match 19", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["kb"], teamRichmond:["cd"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m5d", year:2026, day:"Saturday", session:"Session 5", match:"Match 20", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
     teamWorld:["ss"], teamRichmond:["sn"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m5e", year:2026, day:"Saturday", session:"Session 5", match:"Match 21", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["rk"], teamRichmond:["jc"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["rk"], teamRichmond:["jc"], strokes:4, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m5f", year:2026, day:"Saturday", session:"Session 5", match:"Match 22", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["fs"], teamRichmond:["bb"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["fs"], teamRichmond:["bb"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m5g", year:2026, day:"Saturday", session:"Session 5", match:"Match 23", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["bs"], teamRichmond:["jr"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["bs"], teamRichmond:["jr"], strokes:7, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m5h", year:2026, day:"Saturday", session:"Session 5", match:"Match 24", format:"singles", nine:"Front 9", holeStart:1, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["pl"], teamRichmond:["jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["na"], teamRichmond:["jp"], strokes:8, strokesTo:"richmond", holes:Array(9).fill(null) },
 
 
   // ── MATCH 6 — Singles — Saturday Back 9 ──────────────────────────────────
   { id:"26m6a", year:2026, day:"Saturday", session:"Session 6", match:"Match 25", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["tg"], teamRichmond:["jc"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["tg"], teamRichmond:["jc"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m6b", year:2026, day:"Saturday", session:"Session 6", match:"Match 26", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["rk"], teamRichmond:["bb"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["rk"], teamRichmond:["bb"], strokes:4, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m6c", year:2026, day:"Saturday", session:"Session 6", match:"Match 27", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["pl"], teamRichmond:["jp"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["na"], teamRichmond:["jp"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m6d", year:2026, day:"Saturday", session:"Session 6", match:"Match 28", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["bs"], teamRichmond:["jr"], strokes:6, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["bs"], teamRichmond:["jr"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m6e", year:2026, day:"Saturday", session:"Session 6", match:"Match 29", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["ss"], teamRichmond:["cd"], strokes:2, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["ss"], teamRichmond:["cd"], strokes:4, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m6f", year:2026, day:"Saturday", session:"Session 6", match:"Match 30", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["fs"], teamRichmond:["ah"], strokes:3, strokesTo:"richmond", holes:Array(9).fill(null) },
+    teamWorld:["fs"], teamRichmond:["ah"], strokes:2, strokesTo:"world", holes:Array(9).fill(null) },
   { id:"26m6g", year:2026, day:"Saturday", session:"Session 6", match:"Match 31", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["kb"], teamRichmond:["tp"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["kb"], teamRichmond:["tp"], strokes:7, strokesTo:"richmond", holes:Array(9).fill(null) },
   { id:"26m6h", year:2026, day:"Saturday", session:"Session 6", match:"Match 32", format:"singles", nine:"Back 9", holeStart:10, totalHoles:9, tees:"White", venue:"Stoney Creek",
-    teamWorld:["jh"], teamRichmond:["sn"], strokes:3, strokesTo:"world", holes:Array(9).fill(null) },
+    teamWorld:["jh"], teamRichmond:["sn"], strokes:8, strokesTo:"richmond", holes:Array(9).fill(null) },
 ];
 
 // ── HOLE SCORER ───────────────────────────────────────────────────────────────
@@ -1034,11 +1035,11 @@ function SortableTable({ cols, rows, defaultSort, teamColor }) {
 // ── HEATMAP DATA — recomputed from corrected HISTORY 2017–2025 ──────────────
 // World pairings: World perspective (w=World won, l=World lost, h=halved)
 const PAIRING_DATA = {
-  "bs":{"fs":{w:1,l:2,h:1},"jh":{w:3,l:0,h:0},"kb":{w:1,l:1,h:1},"pl":{w:2,l:1,h:1},"rk":{w:1,l:1,h:0},"ss":{w:1,l:2,h:0},"tg":{w:1,l:2,h:0}},
-  "fs":{"jh":{w:1,l:0,h:0},"kb":{w:0,l:1,h:1},"pl":{w:2,l:6,h:1},"rk":{w:5,l:1,h:1},"ss":{w:4,l:1,h:1},"tg":{w:1,l:2,h:0}},
-  "jh":{"kb":{w:1,l:1,h:0},"pl":{w:1,l:2,h:0},"rk":{w:5,l:3,h:1},"ss":{w:4,l:3,h:0},"tg":{w:2,l:1,h:1}},
-  "kb":{"pl":{w:1,l:2,h:0},"ss":{w:1,l:0,h:0},"tg":{w:0,l:0,h:1}},
-  "pl":{"rk":{w:4,l:1,h:0},"ss":{w:2,l:1,h:0},"tg":{w:0,l:2,h:1}},
+  "bs":{"fs":{w:1,l:2,h:1},"jh":{w:3,l:0,h:0},"kb":{w:1,l:1,h:1},"na":{w:2,l:1,h:1},"rk":{w:1,l:1,h:0},"ss":{w:1,l:2,h:0},"tg":{w:1,l:2,h:0}},
+  "fs":{"jh":{w:1,l:0,h:0},"kb":{w:0,l:1,h:1},"na":{w:2,l:6,h:1},"rk":{w:5,l:1,h:1},"ss":{w:4,l:1,h:1},"tg":{w:1,l:2,h:0}},
+  "jh":{"kb":{w:1,l:1,h:0},"na":{w:1,l:2,h:0},"rk":{w:5,l:3,h:1},"ss":{w:4,l:3,h:0},"tg":{w:2,l:1,h:1}},
+  "kb":{"na":{w:1,l:2,h:0},"ss":{w:1,l:0,h:0},"tg":{w:0,l:0,h:1}},
+  "na":{"rk":{w:4,l:1,h:0},"ss":{w:2,l:1,h:0},"tg":{w:0,l:2,h:1}},
   "rk":{"ss":{w:3,l:0,h:2},"tg":{w:1,l:1,h:1}},
   "ss":{"tg":{w:5,l:1,h:0}},
 };
@@ -1048,7 +1049,7 @@ const SINGLES_DATA = {
   "fs":{"ah":{w:2,l:0,h:0},"cd":{w:3,l:0,h:0},"jc":{w:0,l:3,h:1},"jp":{w:0,l:1,h:0},"sn":{w:1,l:1,h:0},"tp":{w:1,l:0,h:1}},
   "jh":{"ah":{w:0,l:1,h:0},"bb":{w:0,l:0,h:1},"cd":{w:0,l:1,h:1},"jc":{w:0,l:2,h:0},"jp":{w:0,l:2,h:0},"sn":{w:0,l:0,h:1},"tp":{w:0,l:1,h:0}},
   "kb":{"jr":{w:1,l:1,h:1}},
-  "pl":{"ah":{w:1,l:2,h:0},"bb":{w:0,l:1,h:0},"cd":{w:0,l:2,h:1},"jc":{w:1,l:1,h:0},"jp":{w:1,l:1,h:0},"jr":{w:0,l:2,h:0}},
+  "na":{"ah":{w:1,l:2,h:0},"bb":{w:0,l:1,h:0},"cd":{w:0,l:2,h:1},"jc":{w:1,l:1,h:0},"jp":{w:1,l:1,h:0},"jr":{w:0,l:2,h:0}},
   "rk":{"cd":{w:5,l:0,h:0},"jc":{w:3,l:0,h:0},"jp":{w:1,l:0,h:0},"sn":{w:1,l:1,h:1},"tp":{w:2,l:2,h:0}},
   "ss":{"ah":{w:1,l:1,h:0},"cd":{w:1,l:2,h:0},"jc":{w:1,l:1,h:0},"jp":{w:3,l:1,h:0},"sn":{w:0,l:3,h:0},"tp":{w:3,l:0,h:0}},
   "tg":{"ah":{w:1,l:1,h:0},"cd":{w:1,l:0,h:0},"jc":{w:2,l:2,h:1},"jr":{w:0,l:1,h:0}},
@@ -1324,7 +1325,7 @@ const ALL_TIME = [
   { id:"rk",  name:"R. Karnes",   team:"world",    wins:26, losses:15, halved:8,  pts:30,   apps:9 },
   { id:"ss",  name:"S. Smith",    team:"world",    wins:20, losses:24, halved:3,  pts:21.5, apps:9 },
   { id:"jh",  name:"J. Hicks",    team:"world",    wins:17, losses:21, halved:4,  pts:19,   apps:8 },
-  { id:"pl",  name:"P. Limon",    team:"world",    wins:13, losses:23, halved:6,  pts:16,   apps:8 },
+  { id:"na",  name:"P. Limon",    team:"world",    wins:13, losses:23, halved:6,  pts:16,   apps:8 },
   { id:"tg",  name:"T. Grammo",   team:"world",    wins:11, losses:12, halved:6,  pts:14,   apps:6 },
   { id:"bs",  name:"B. Settle",   team:"world",    wins:11, losses:13, halved:5,  pts:13.5, apps:6 },
   { id:"fs",  name:"F. Smith",    team:"world",    wins:11, losses:10, halved:4,  pts:13,   apps:9 },
@@ -1753,7 +1754,7 @@ function InfoTab() {
 
 // Map player display names → ids (handles all name variants in HISTORY)
 const NAME_TO_ID = {
-  "R. Karnes":"rk","S. Smith":"ss","J. Hicks":"jh","P. Limon":"pl",
+  "R. Karnes":"rk","S. Smith":"ss","J. Hicks":"jh","P. Limon":"na",
   "T. Grammo":"tg","B. Settle":"bs","F. Smith":"fs","F. Smith ":"fs",
   "K. Bauer":"kb",
   "J. Cummings":"jc","C. Dozier":"cd","S. Newton":"sn","J. Pleasants":"jp",
@@ -2925,7 +2926,8 @@ const RICHMOND_PLAYERS_DRAFT = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.a
 function draftGetHCByTee(id, tee) {
   const p = ALL_PLAYERS.find(x=>x.id===id);
   if (!p) return 0;
-  if (tee==="gold" || tee==="red") return p.hcG ?? p.hc ?? 0;
+  if (tee==="red")  return p.hcR ?? p.hcG ?? p.hc ?? 0;
+  if (tee==="gold") return p.hcG ?? p.hc ?? 0;
   if (tee==="blue") return p.hcB ?? p.hc ?? 0;
   return p.hcW ?? p.hc ?? 0;
 }
