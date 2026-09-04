@@ -3175,10 +3175,7 @@ function DraftRoom({ darkMode }) {
       {/* Header */}
       <div style={{ background:"#0d2b2f", padding:"16px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div>
-          <div style={{ background:"#f5be00", borderRadius:4, padding:"2px 8px", display:"inline-block", marginBottom:6 }}>
-            <span style={{ fontSize:10, fontWeight:900, letterSpacing:3, color:"#051c1f" }}>2026</span>
-          </div>
-          <div style={{ color:"white", fontSize:28, fontWeight:900, letterSpacing:2 }}>FALL CUP · DRAFT ROOM</div>
+          <img src={NAV_LOGO_URI} alt="Fall Cup" style={{ height:64, width:"auto", maxWidth:300, display:"block", marginTop:-26, marginBottom:26 }} />
           <div style={{ color:"rgba(255,255,255,0.5)", fontSize:12, letterSpacing:2 }}>
             {viewOnly ? "PAIRINGS · LIVE VIEW" : "PAIRINGS SELECTION"}
           </div>
