@@ -1325,7 +1325,7 @@ const ALL_TIME = [
   { id:"rk",  name:"R. Karnes",   team:"world",    wins:26, losses:15, halved:8,  pts:30,   apps:9 },
   { id:"ss",  name:"S. Smith",    team:"world",    wins:20, losses:24, halved:3,  pts:21.5, apps:9 },
   { id:"jh",  name:"J. Hicks",    team:"world",    wins:17, losses:21, halved:4,  pts:19,   apps:8 },
-  { id:"na",  name:"P. Limon",    team:"world",    wins:13, losses:23, halved:6,  pts:16,   apps:8 },
+  { id:"pl",  name:"P. Limon",    team:"world",    wins:13, losses:23, halved:6,  pts:16,   apps:8, alumni:true },
   { id:"tg",  name:"T. Grammo",   team:"world",    wins:11, losses:12, halved:6,  pts:14,   apps:6 },
   { id:"bs",  name:"B. Settle",   team:"world",    wins:11, losses:13, halved:5,  pts:13.5, apps:6 },
   { id:"fs",  name:"F. Smith",    team:"world",    wins:11, losses:10, halved:4,  pts:13,   apps:9 },
@@ -1754,7 +1754,7 @@ function InfoTab() {
 
 // Map player display names → ids (handles all name variants in HISTORY)
 const NAME_TO_ID = {
-  "R. Karnes":"rk","S. Smith":"ss","J. Hicks":"jh","P. Limon":"na",
+  "R. Karnes":"rk","S. Smith":"ss","J. Hicks":"jh","P. Limon":"pl","N. Altaffer":"na",
   "T. Grammo":"tg","B. Settle":"bs","F. Smith":"fs","F. Smith ":"fs",
   "K. Bauer":"kb",
   "J. Cummings":"jc","C. Dozier":"cd","S. Newton":"sn","J. Pleasants":"jp",
