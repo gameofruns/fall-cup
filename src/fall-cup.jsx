@@ -3842,6 +3842,25 @@ export default function FallCupApp() {
               background:`linear-gradient(135deg, #062a30, #0a3d46)`, color:"#fff",
               fontWeight:800, fontSize:15, cursor:"pointer" }}>Unlock Scoring</button>
             <div style={{ textAlign:"center", marginTop:12, color:C.muted, fontSize:11 }}>Contact a captain for the code</div>
+
+            {/* Discrete reset — only visible when correct reset PIN entered */}
+            {pinEntry === "8235" && (
+              <button onClick={async () => {
+                if (!window.confirm("Reset ALL scores? This cannot be undone.")) return;
+                try {
+                  await fetch(`${SUPABASE_URL}/rest/v1/match_holes`, {
+                    method:"DELETE",
+                    headers:{ apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`,
+                      "Content-Type":"application/json" },
+                  });
+                  setShowPinModal(false); setPinEntry(""); setPinError(false);
+                  window.location.reload();
+                } catch(e) { alert("Reset failed: " + e.message); }
+              }} style={{ width:"100%", marginTop:8, padding:10, borderRadius:10, border:`1px solid ${C.border}`,
+                background:"transparent", color:"#dc2626", fontWeight:700, fontSize:12, cursor:"pointer" }}>
+                Reset All Scores
+              </button>
+            )}
           </div>
         </div>
       )}
