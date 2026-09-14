@@ -1224,7 +1224,7 @@ function StatsTab({ matches }) {
           </span>
         );
       }},
-    { key:"id",     label:"GRINT",  w:"42px", color:()=>C.muted,
+    { key:"id",     label:"HC",     w:"42px", color:()=>C.muted,
       format:(_,r) => { const USGA={rk:6.7,ss:14.8,jh:20.6,na:6.0,tg:16.0,bs:13.5,fs:14.1,kb:16.9,jc:13.0,cd:19.5,sn:11.5,jp:19.4,tp:10.0,ah:24.0,jr:25.0,bb:11.5}; return USGA[r.id]??r.hc; }},
     { key:"wins",   label:"W",      w:"30px", color:v=>v>0?"#15803d":C.muted },
     { key:"halved", label:"H",      w:"30px", color:v=>v>0?"#d97706":C.muted },
@@ -1266,7 +1266,7 @@ function StatsTab({ matches }) {
             background:C.cardAlt, borderRadius:"8px 8px 0 0", padding:"6px 10px",
             borderBottom:`1px solid ${C.border}` }}>
             <div style={{ fontSize:9, fontWeight:700, color:C.muted, letterSpacing:1 }}>PLAYER</div>
-            <div style={{ fontSize:9, fontWeight:700, color:C.muted, textAlign:"center" }}>Grint</div>
+            <div style={{ fontSize:9, fontWeight:700, color:C.muted, textAlign:"center" }}>HC</div>
             {COURSES.map(c => (
               <div key={c.key} style={{ textAlign:"center" }}>
                 <div style={{ fontSize:9, fontWeight:700, color:C.muted }}>{c.label}</div>
