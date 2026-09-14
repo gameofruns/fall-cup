@@ -111,7 +111,7 @@ const ALL_PLAYERS = [
   { id:"jr",  name:"J. Rabideau",  team:"richmond", hc:15, hcB:17, hcW:15, hcG:13, hcR:9 },
   { id:"sn",  name:"S. Newton",    team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4, hcR:2 },
   { id:"bb",  name:"B. Beruete",   team:"richmond", hc:5,  hcB:6,  hcW:5,  hcG:4, hcR:2 },
-  { id:"ah",  name:"A. Hoy",       team:"richmond", hc:7, hcB:9, hcW:7, hcG:5, hcR:9 },
+  { id:"ah",  name:"A. Hoy",       team:"richmond", hc:14, hcB:16, hcW:14, hcG:12, hcR:9 },
 ];
 
 // ── STROKES CALCULATOR ────────────────────────────────────────────────────────
@@ -159,7 +159,7 @@ const DK_FRONT_SI  = [11, 9, 5, 17, 7, 13, 1, 15, 3];  // holes 1-9,  index 0=H1
 const DK_BACK_SI   = [2,  4, 14, 16, 12, 18, 8, 10, 6]; // holes 10-18, index 0=H10
 // Stoney Creek Monocan/Shamokin – White tees SI
 const SC_FRONT_SI  = [5, 1, 13, 3, 11, 9, 17, 15, 7];   // holes 1-9,  index 0=H1
-const SC_BACK_SI   = [12, 2, 16, 4, 8, 6, 18, 10, 14];  // holes 10-18 (Shamokin), index 0=H10
+const SC_BACK_SI   = [4, 8, 2, 16, 14, 6, 10, 18, 12];  // holes 10-18 (Tuckahoe), index 0=H10
 // Dogwood Trace (2025 venue) – retained for history
 const DOGWOOD_FRONT_SI = [15, 7, 13, 3, 11, 1, 17, 5, 9];
 const DOGWOOD_BACK_SI  = [18, 12, 8, 14, 2, 4, 6, 16, 10];
@@ -1189,6 +1189,7 @@ function Heatmap({ title, rowPlayers, colPlayers, getData, darkMode }) {
 
 // ── ROSTER TAB ────────────────────────────────────────────────────────────────
 function StatsTab({ matches }) {
+  const [view, setView] = useState("roster"); // "roster" | "handicaps"
   const [yearFilter, setYearFilter] = useState("2026");
   const filtered = matches.filter(m => String(m.year) === yearFilter);
 
@@ -1233,22 +1234,113 @@ function StatsTab({ matches }) {
       format: v => v ? `${v}%` : "—" },
   ];
 
-  // Active players only for season stats
   const worldRows = ALL_PLAYERS.filter(p=>p.team==="world" && !p.alumni).map(p=>({...p,...pStats(p.id)}));
   const richRows  = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.alumni).map(p=>({...p,...pStats(p.id)}));
 
+  // Handicap table data
+  const COURSES = [
+    { key:"dk_w",  label:"DK White",  rating:"70.60", slope:"132", hcField: p => p.hcW ?? p.hc },
+    { key:"dk_g",  label:"DK Gold",   rating:"68.10", slope:"126", hcField: p => p.hcG },
+    { key:"dk_r",  label:"DK Red",    rating:"62.80", slope:"117", hcField: p => p.hcR },
+    { key:"sc_sha",label:"Sha White", rating:"70.60", slope:"123", hcField: p => {
+      const r9=70.6/2, p9=72/2; return Math.round(((p.usga??p.hc*2)/2)*(123/113)+(r9-p9));
+    }},
+    { key:"sc_tuck",label:"Tuck White",rating:"70.10",slope:"126", hcField: p => {
+      const r9=70.1/2, p9=72/2; return Math.round(((p.usga??p.hc*2)/2)*(126/113)+(r9-p9));
+    }},
+  ];
+
+  // Add usga field to players for HC calculation
+  const USGA = {
+    rk:6.7, ss:14.8, jh:20.6, na:6.0, tg:16.0, bs:13.5, fs:14.1, kb:16.9,
+    jc:13.0, cd:19.5, sn:11.5, jp:19.4, tp:10.0, ah:24.0, jr:25.0, bb:11.5
+  };
+
+  function HCTable({ players, teamColor }) {
+    return (
+      <div style={{ overflowX:"auto", marginBottom:16 }}>
+        <div style={{ minWidth:480 }}>
+          {/* Header */}
+          <div style={{ display:"grid", gridTemplateColumns:`1fr 50px repeat(${COURSES.length}, 1fr)`,
+            background:C.cardAlt, borderRadius:"8px 8px 0 0", padding:"6px 10px",
+            borderBottom:`1px solid ${C.border}` }}>
+            <div style={{ fontSize:9, fontWeight:700, color:C.muted, letterSpacing:1 }}>PLAYER</div>
+            <div style={{ fontSize:9, fontWeight:700, color:C.muted, textAlign:"center" }}>Grint</div>
+            {COURSES.map(c => (
+              <div key={c.key} style={{ textAlign:"center" }}>
+                <div style={{ fontSize:9, fontWeight:700, color:C.muted }}>{c.label}</div>
+                <div style={{ fontSize:8, color:C.muted, opacity:0.7 }}>{c.rating}/{c.slope}</div>
+              </div>
+            ))}
+          </div>
+          {/* Rows */}
+          {players.map((p,i) => {
+            const usga = USGA[p.id] ?? 0;
+            const pWithUsga = { ...p, usga };
+            return (
+              <div key={p.id} style={{ display:"grid",
+                gridTemplateColumns:`1fr 50px repeat(${COURSES.length}, 1fr)`,
+                padding:"7px 10px", alignItems:"center",
+                background: i%2===0 ? C.card : C.cardAlt,
+                borderRadius: i===players.length-1 ? "0 0 8px 8px" : 0,
+                borderBottom: i<players.length-1 ? `1px solid ${C.border}` : "none" }}>
+                <div style={{ color:teamColor, fontWeight:600, fontSize:12 }}>{p.name}</div>
+                <div style={{ textAlign:"center", color:C.muted, fontSize:12 }}>{usga}</div>
+                {COURSES.map(c => (
+                  <div key={c.key} style={{ textAlign:"center", color:C.text, fontSize:12, fontWeight:500 }}>
+                    {c.hcField(pWithUsga) ?? "—"}
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  const worldHC = ALL_PLAYERS.filter(p=>p.team==="world" && !p.alumni);
+  const richHC  = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.alumni);
+
   return (
     <div style={{ padding:"16px 16px 24px" }}>
-      <div style={{ display:"flex", gap:8, marginBottom:16, alignItems:"center" }}>
-        <div style={{ color:C.muted, fontSize:11, fontWeight:700, letterSpacing:1.5 }}>SEASON</div>
-        {["2026"].map(y => (
-          <button key={y} onClick={() => setYearFilter(y)} style={{ padding:"6px 18px", borderRadius:20, border:"none", cursor:"pointer", background:yearFilter===y?C.accent:C.subtle, color:yearFilter===y?"#fff":C.muted, fontSize:12, fontWeight:700 }}>{y} Fall Cup</button>
+      {/* Sub-tabs */}
+      <div style={{ display:"flex", gap:6, marginBottom:16, background:C.cardAlt, borderRadius:20, padding:3, alignSelf:"flex-start" }}>
+        {[{id:"roster",label:"Roster"},{id:"handicaps",label:"Handicaps"}].map(v => (
+          <button key={v.id} onClick={()=>setView(v.id)} style={{
+            padding:"6px 18px", borderRadius:18, border:"none", cursor:"pointer",
+            background:view===v.id?C.accent:"transparent",
+            color:view===v.id?"#fff":C.muted, fontSize:12, fontWeight:700 }}>
+            {v.label}
+          </button>
         ))}
       </div>
-      <div style={{ color:C.worldGold, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:8 }}>TEAM WORLD</div>
-      <SortableTable cols={cols} rows={worldRows} defaultSort="pts" />
-      <div style={{ color:C.richLight, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:8 }}>TEAM RICHMOND</div>
-      <SortableTable cols={cols} rows={richRows} defaultSort="pts" />
+
+      {view==="roster" && <>
+        <div style={{ display:"flex", gap:8, marginBottom:16, alignItems:"center" }}>
+          <div style={{ color:C.muted, fontSize:11, fontWeight:700, letterSpacing:1.5 }}>SEASON</div>
+          {["2026"].map(y => (
+            <button key={y} onClick={() => setYearFilter(y)} style={{ padding:"6px 18px", borderRadius:20, border:"none", cursor:"pointer", background:yearFilter===y?C.accent:C.subtle, color:yearFilter===y?"#fff":C.muted, fontSize:12, fontWeight:700 }}>{y} Fall Cup</button>
+          ))}
+        </div>
+        <div style={{ color:C.worldGold, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:8 }}>TEAM WORLD</div>
+        <SortableTable cols={cols} rows={worldRows} defaultSort="pts" />
+        <div style={{ color:C.richLight, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:8 }}>TEAM RICHMOND</div>
+        <SortableTable cols={cols} rows={richRows} defaultSort="pts" />
+      </>}
+
+      {view==="handicaps" && <>
+        <div style={{ color:C.muted, fontSize:10, fontWeight:700, letterSpacing:2, marginBottom:12 }}>
+          9-HOLE COURSE HANDICAPS · DEVIL'S KNOB & STONEY CREEK
+        </div>
+        <div style={{ color:C.worldGold, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:8 }}>TEAM WORLD</div>
+        <HCTable players={worldHC} teamColor={C.worldGold} />
+        <div style={{ color:C.richLight, fontSize:11, fontWeight:700, letterSpacing:2, marginBottom:8 }}>TEAM RICHMOND</div>
+        <HCTable players={richHC} teamColor={C.richLight} />
+        <div style={{ color:C.muted, fontSize:10, marginTop:8, lineHeight:1.5 }}>
+          DK = Devil's Knob · Sha = Stoney Creek Shamokin (Front 9) · Tuck = Stoney Creek Tuckahoe (Back 9)
+        </div>
+      </>}
     </div>
   );
 }
@@ -1625,24 +1717,27 @@ function InfoTab() {
             red:[406,281,246,238,285,104,280,114,289] },
         },
         {
-          name:"Stoney Creek", subtitle:"Monocan / Shamokin · Wintergreen Resort",
+          name:"Stoney Creek", subtitle:"Shamokin / Tuckahoe · Wintergreen Resort",
           elevation:"2,000 ft",
           note:"Nestled in the valley below Devil's Knob. A flatter, more forgiving layout.",
           tees: {
-            blue:  { rating:"72.10", slope:"132" },
-            white: { rating:"70.60", slope:"132" },
-            red:   { rating:"66.40", slope:"119" },
+            blue:  { rating:"72.0/132 (Sha) | 72.0/132 (Tuck)", slope:"132" },
+            white: { rating:"70.6/123 (Sha) | 70.1/126 (Tuck)", slope:"126" },
+            gold:  { rating:"67.6/118 (Sha) | 67.9/122 (Tuck)", slope:"122" },
+            red:   { rating:"71.6/129 (Sha) | 71.8/130 (Tuck)", slope:"130" },
           },
-          front: { holes:[1,2,3,4,5,6,7,8,9], si:[5,1,13,3,11,9,17,15,7],
-            par:[5,4,4,4,3,4,4,3,5],
-            blue:[545,354,427,399,161,364,390,163,501],
-            white:[512,324,412,375,148,354,375,150,473],
-            red:[419,256,337,342,111,304,335,126,414] },
-          back: { holes:[10,11,12,13,14,15,16,17,18], si:[12,2,16,4,8,6,18,10,14],
+          front: { holes:[1,2,3,4,5,6,7,8,9], si:[12,2,16,4,8,6,18,10,9],
             par:[4,4,3,5,4,4,3,5,4],
             blue:[418,380,155,527,334,383,199,491,435],
             white:[400,372,145,495,325,352,180,473,410],
+            gold:[360,360,145,460,325,318,134,413,370],
             red:[360,338,121,449,290,318,114,413,370] },
+          back: { holes:[10,11,12,13,14,15,16,17,18], si:[4,8,2,16,14,6,10,18,12],
+            par:[4,4,5,3,4,4,4,3,5],
+            blue:[451,335,544,185,440,332,367,144,559],
+            white:[429,317,524,160,390,314,343,136,526],
+            gold:[389,317,449,139,347,314,327,120,495],
+            red:[389,292,449,119,347,290,327,102,392] },
         },
       ].map((course, ci) => {
         const frontParSum = course.front.par.reduce((a,b)=>a+b,0);
@@ -1784,7 +1879,7 @@ function computeInsights() {
   const ACTIVE = new Set(ALL_PLAYERS.map(p => p.id)); // includes alumni for stats computation
   const worldIds = new Set(ALL_PLAYERS.filter(p=>p.team==="world").map(p=>p.id));
   const richIds  = new Set(ALL_PLAYERS.filter(p=>p.team==="richmond").map(p=>p.id));
-  const fmtStats={}, yearStats={}, h2h={}, pairW={}, pairR={}, singles={};
+  const fmtStats={}, yearStats={}, h2h={}, h2hTeam={}, pairW={}, pairR={}, singles={};
 
   function bump(obj, k1, k2, w, l, h) {
     if (!obj[k1]) obj[k1]={};
@@ -1803,12 +1898,25 @@ function computeInsights() {
         for (const id of wIds) {
           bump(fmtStats,id,fmt,ww?1:0,rw?1:0,hw?1:0);
           bump(yearStats,id,yr.year,ww?1:0,rw?1:0,hw?1:0);
-          if(isSingles&&rIds.length===1) bump(h2h,id,rIds[0],ww?1:0,rw?1:0,hw?1:0);
+          // singles h2h
+          if (isSingles&&wIds.length===1&&rIds.length===1) {
+            bump(h2h, wIds[0], rIds[0], ww?1:0, rw?1:0, hw?1:0);
+            bump(h2h, rIds[0], wIds[0], rw?1:0, ww?1:0, hw?1:0);
+            bump(singles, wIds[0], rIds[0], ww?1:0, rw?1:0, hw?1:0);
+          }
+          // team h2h — track each World player vs each Richmond player in team formats
+          if (!isSingles) {
+            for (const wId of wIds) {
+              for (const rId of rIds) {
+                bump(h2hTeam, wId, rId, ww?1:0, rw?1:0, hw?1:0);
+                bump(h2hTeam, rId, wId, rw?1:0, ww?1:0, hw?1:0);
+              }
+            }
+          }
         }
         for (const id of rIds) {
           bump(fmtStats,id,fmt,rw?1:0,ww?1:0,hw?1:0);
           bump(yearStats,id,yr.year,rw?1:0,ww?1:0,hw?1:0);
-          if(isSingles&&wIds.length===1) bump(h2h,id,wIds[0],rw?1:0,ww?1:0,hw?1:0);
         }
         // Pairing records
         if (wIds.length===2) { const [a,b]=[...wIds].sort(); bump(pairW,a,b,ww?1:0,rw?1:0,hw?1:0); bump(pairW,b,a,ww?1:0,rw?1:0,hw?1:0); }
@@ -1824,6 +1932,7 @@ function computeInsights() {
     yearSeries[id]=Object.entries(yearStats[id]).map(([y,r])=>({y:+y,pts:r.w+r.h*0.5,n:r.w+r.l+r.h})).sort((a,b)=>a.y-b.y);
   }
 
+  // Singles rivals
   const rivals={};
   for (const id of ACTIVE) {
     if (!h2h[id]) continue;
@@ -1841,6 +1950,24 @@ function computeInsights() {
     };
   }
 
+  // Team format rivals
+  const rivalsTeam={};
+  for (const id of ACTIVE) {
+    if (!h2hTeam[id]) continue;
+    const entries=Object.entries(h2hTeam[id])
+      .filter(([opp,r])=>ACTIVE.has(opp)&&r.w+r.l+r.h>=2)
+      .map(([opp,r])=>({opp,rec:r,pct:(r.w+r.h*0.5)/(r.w+r.l+r.h)}));
+    if (!entries.length) continue;
+    const nemesis=entries.reduce((a,b)=>b.pct<a.pct?b:a);
+    const victimCands=entries.filter(e=>e.opp!==nemesis.opp);
+    const victim=victimCands.length?victimCands.reduce((a,b)=>b.pct>a.pct?b:a):null;
+    rivalsTeam[id]={
+      nemesis:nemesis.opp, nRec:nemesis.rec,
+      victim:victim&&victim.pct>0.5?victim.opp:null,
+      vRec:victim&&victim.pct>0.5?victim.rec:null
+    };
+  }
+
   // Factoids
   function rp(r){const t=r.w+r.l+r.h;return t?(r.w+r.h*0.5)/t:0;}
   function rt(r){return r.w+r.l+r.h;}
@@ -1851,9 +1978,16 @@ function computeInsights() {
   // ── FACTOIDS (grouped by topic) ─────────────────────────────────────────────
   // Helper: day-order-aware day1/day2 bucketing
   const DAY_ORDER_MAP = {};
+  // Build day order map — for HISTORY data that lacks day fields, use match index
   for (const yr of HISTORY) {
     const days=[...new Set(yr.matches.map(m=>m.day||"").filter(Boolean))].sort((a,b)=>['Friday','Saturday','Sunday'].indexOf(a)-['Friday','Saturday','Sunday'].indexOf(b));
-    DAY_ORDER_MAP[yr.year] = {day1:days[0], day2:days[1]};
+    if (days.length >= 2) {
+      DAY_ORDER_MAP[yr.year] = {day1:days[0], day2:days[1]};
+    } else {
+      // No day fields — split matches by index (first half = day1, second half = day2)
+      const half = Math.floor(yr.matches.length / 2);
+      DAY_ORDER_MAP[yr.year] = {day1:"__first__", day2:"__second__", splitIdx:half};
+    }
   }
 
   // ── GROUP 1: THE SERIES ──────────────────────────────────────────────────────
@@ -1906,8 +2040,10 @@ function computeInsights() {
   for(const yr of HISTORY){
     const dm=DAY_ORDER_MAP[yr.year];if(!dm)continue;
     let yd1w=0,yd1r=0;
-    for(const m of yr.matches){
-      const bucket=m.day===dm.day1?"day1":"day2";
+    yr.matches.forEach((m,mi)=>{
+      const bucket = dm.splitIdx!=null
+        ? (mi < dm.splitIdx ? "day1" : "day2")
+        : (m.day===dm.day1?"day1":"day2");
       for(const p of m.pairings){
         const nw=p.winner==="world"?"w":p.winner==="richmond"?"l":"h";
         if(bucket==="day1"){yd1w+=(nw==="w"?1:0);yd1r+=(nw==="l"?1:0);d1t[nw]++;}else d2t[nw]++;
@@ -1916,16 +2052,16 @@ function computeInsights() {
         addP(p.world, nw==="w"?"w":nw==="l"?"l":"h");
         addP(p.richmond, nw==="l"?"w":nw==="w"?"l":"h");
       }
-    }
+    });
     const d1Lead=yd1w>yd1r?"world":yd1r>yd1w?"richmond":null;
     if(d1Lead){d1Total++;if(d1Lead===yr.winner)d1WinsCup++;}
   }
 
   const pp=r=>{const t=(r.w||0)+(r.l||0)+(r.h||0);return t?Math.round(((r.w||0)+(r.h||0)*0.5)/t*100):null;};
-  const d1Wpct=Math.round((d1t.w+d1t.h*0.5)/(d1t.w+d1t.l+d1t.h)*100);
-  const d1Rpct=Math.round((d1t.l+d1t.h*0.5)/(d1t.w+d1t.l+d1t.h)*100);
-  const d2Wpct=Math.round((d2t.w+d2t.h*0.5)/(d2t.w+d2t.l+d2t.h)*100);
-  const d2Rpct=Math.round((d2t.l+d2t.h*0.5)/(d2t.w+d2t.l+d2t.h)*100);
+  const d1Total2=d1t.w+d1t.l+d1t.h; const d1Wpct=d1Total2?Math.round((d1t.w+d1t.h*0.5)/d1Total2*100):0;
+  const d1Rpct=d1Total2?Math.round((d1t.l+d1t.h*0.5)/d1Total2*100):0;
+  const d2Total2=d2t.w+d2t.l+d2t.h; const d2Wpct=d2Total2?Math.round((d2t.w+d2t.h*0.5)/d2Total2*100):0;
+  const d2Rpct=d2Total2?Math.round((d2t.l+d2t.h*0.5)/d2Total2*100):0;
 
   factoids.push({group:"Day 1 vs Day 2",text:`Day 1 is a coin flip — World wins ${d1Wpct}% and Richmond wins ${d1Rpct}% of opening day matches across all 9 cups. Neither team has a meaningful first-day edge.`,color:C.muted});
   factoids.push({group:"Day 1 vs Day 2",text:`Day 2 belongs to Richmond. They win ${d2Rpct}% of second-day matches versus World's ${d2Wpct}%. Richmond is built to close.`,color:C.richLight});
@@ -1937,8 +2073,8 @@ function computeInsights() {
     const d1=pDay[id]?.day1||{},d2=pDay[id]?.day2||{};
     const t1=(d1.w||0)+(d1.l||0)+(d1.h||0),t2=(d2.w||0)+(d2.l||0)+(d2.h||0);
     if(t1<10||t2<10)continue;
-    const p1=pp(d1),p2=pp(d2),diff=p1-p2;
-    if(Math.abs(diff)>=15)splits.push({id,p1,t1,p2,t2,diff});
+    const p1=pp(d1)??0,p2=pp(d2)??0,diff=(p1||0)-(p2||0);
+    if(p1!==null&&p2!==null&&Math.abs(diff)>=15)splits.push({id,p1,t1,p2,t2,diff});
   }
   splits.sort((a,b)=>Math.abs(b.diff)-Math.abs(a.diff));
   for(const s of splits){
@@ -1955,18 +2091,14 @@ function computeInsights() {
   {const rkAlt=fmtStats["rk"]?.alt;
   if(rkAlt&&rkAlt.l===0&&rt(rkAlt)>=3)factoids.push({group:"Format Records",text:`R. Karnes has never lost an Alternate Shot match — ${rkAlt.w}W-0L-${rkAlt.h}H in the format across all Fall Cups`,color:C.worldGold});}
 
-  // Best alt shot player
-  {let bestAlt={id:null,pct:0,rec:null};
-  for(const id of ACTIVE){const r=fmtStats[id]?.alt;if(!r||rt(r)<3)continue;const p=rp(r);if(p>bestAlt.pct)bestAlt={id,pct:p,rec:r};}
-  if(bestAlt.id){const pl=ALL_PLAYERS.find(p=>p.id===bestAlt.id);const tc=pl?.team==="world"?C.worldGold:C.richLight;
-  factoids.push({group:"Format Records",text:`${pl?.name} is the best Alternate Shot player in Fall Cup history — ${bestAlt.rec.w}-${bestAlt.rec.l}-${bestAlt.rec.h} across all Alternate Shot formats, regardless of partner.`,color:tc});}}
+
 
   // 2019 singles sweep
   {for(const yr of HISTORY){if(yr.year!==2019)continue;
     for(const m of yr.matches){if(m.format!=="singles")continue;
       const rW=m.pairings.filter(p=>p.winner==="richmond").length;
-      if(rW===m.pairings.length&&m.pairings.length>=6)
-        factoids.push({group:"Format Records",text:`In 2019, Richmond swept the entire back 9 singles session ${rW}-0, turning a close match into a rout in a single afternoon.`,color:C.richLight});}}}
+      if(rW>=5&&m.pairings.length>=6)
+        factoids.push({group:"Format Records",text:`In 2019, Richmond dominated the back 9 singles session ${rW}-1, turning a close match into a rout in a single afternoon.`,color:C.richLight});}}}
 
   // 2021 singles dominance
   {const yr2021=HISTORY.find(y=>y.year===2021);
@@ -1977,10 +2109,13 @@ function computeInsights() {
   // ── GROUP 4: INDIVIDUAL RECORDS ─────────────────────────────────────────────
   factoids.push({group:"Individual Records", text:"", divider:true});
 
-  // Karnes vs every opponent
-  {const rkS=singles["rk"]||{};const q=Object.entries(rkS).filter(([,r])=>r.w+r.l+r.h>=2);
-  if(q.length>=3&&q.every(([,r])=>(r.w+r.h*0.5)/(r.w+r.l+r.h)>0.5))
-    factoids.push({group:"Individual Records",text:`R. Karnes has a winning record against every Richmond singles opponent he has faced with a minimum of 2 matches — no one has found an answer for him in individual play.`,color:C.worldGold});}
+  // Karnes singles — positive framing
+  {const rkSingles=singles["rk"]||{};
+  const rkVsTp=rkSingles["tp"];
+  const allOpps=Object.entries(rkSingles).filter(([opp,r])=>r.w+r.l+r.h>=2&&opp!=="tp");
+  const allWinning=allOpps.length>=3&&allOpps.every(([,r])=>(r.w+r.h*0.5)/(r.w+r.l+r.h)>0.5);
+  if(allWinning&&rkVsTp)
+    factoids.push({group:"Individual Records",text:`R. Karnes has a winning singles record against every Richmond opponent he has faced — except T. Perdue. Perdue is ${rkVsTp.w}-${rkVsTp.l}-${rkVsTp.h} against him, the one player who has his number.`,color:C.worldGold});}
 
   // Karnes vs Dozier
   {const rkVsCd=singles["rk"]?.["cd"];
@@ -2048,7 +2183,7 @@ function computeInsights() {
     for (const [a, bmap] of Object.entries(pairData)) {
       for (const [b, rec] of Object.entries(bmap)) {
         const t = rec.w + rec.l + rec.h;
-        if (t < 1) continue; // need at least 1 match together
+        if (t < 2) continue; // need at least 2 matches together
         if (a === id) entries.push({ partner: b, rec, pct: (rec.w + rec.h * 0.5) / t });
         if (b === id) entries.push({ partner: a, rec, pct: (rec.w + rec.h * 0.5) / t });
       }
@@ -2063,7 +2198,29 @@ function computeInsights() {
   }
 
 
-  return { fmtStats, yearSeries, rivals, partnerStats, pairW, pairR, singles, factoids, yearCumSeries };
+  // ── GROUP 6: PAIRINGS HISTORY ──────────────────────────────────────────────
+  factoids.push({group:"Pairings History", text:"", divider:true});
+
+  // Most frequent pairing ever
+  factoids.push({group:"Pairings History",text:"F. Smith and P. Limon are the most frequently paired World duo in Fall Cup history — 9 times together in team formats.",color:C.worldGold});
+
+  // Hicks & Karnes
+  factoids.push({group:"Pairings History",text:"J. Hicks and R. Karnes have been paired together 8 times — World's second most frequent partnership and easily their most tested combination.",color:C.worldGold});
+
+  // Cummings & Dozier
+  factoids.push({group:"Pairings History",text:"J. Cummings and C. Dozier are Richmond's most frequent pairing at 5 times together. A. Hoy and S. Newton match that with 5 as well.",color:C.richLight});
+
+  // Most faced opponent
+  factoids.push({group:"Pairings History",text:"J. Hicks and S. Newton have faced each other more than any other cross-team matchup in Fall Cup history — 14 times.",color:C.muted});
+
+  // Least paired qualifying
+  factoids.push({group:"Pairings History",text:"Despite both being World mainstays, B. Settle and R. Karnes have only been paired together twice in team formats.",color:C.worldGold});
+
+  // Perdue day2 closer
+  factoids.push({group:"Pairings History",text:"T. Perdue is Richmond's most dominant day 2 player — 71% win rate in second-day matches across all Fall Cups, the highest of any qualifying player.",color:C.richLight});
+
+
+  return { fmtStats, yearSeries, rivals, rivalsTeam, partnerStats, pairW, pairR, singles, factoids, yearCumSeries };
 }
 
 const INSIGHTS = computeInsights();
@@ -2285,7 +2442,7 @@ function InsightsTab({ darkMode }) {
   const [view, setView] = useState("factoids");
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
-  const { fmtStats, yearSeries, rivals, partnerStats } = INSIGHTS;
+  const { fmtStats, yearSeries, rivals, rivalsTeam, partnerStats } = INSIGHTS;
 
   const VIEWS = [
     { id:"factoids", label:"Insights" },
@@ -2410,11 +2567,17 @@ function InsightsTab({ darkMode }) {
 
             {/* MATCHUPS */}
             {view==="nemesis" && (() => {
-              const nemPlayer = rival?.nemesis ? ALL_PLAYERS.find(x=>x.id===rival.nemesis) : null;
-              const vicPlayer = rival?.victim  ? ALL_PLAYERS.find(x=>x.id===rival.victim)  : null;
-              const bestP  = partners?.bestPartner  ? ALL_PLAYERS.find(x=>x.id===partners.bestPartner)  : null;
-              const worstP = partners?.worstPartner ? ALL_PLAYERS.find(x=>x.id===partners.worstPartner) : null;
-              const hasAnything = nemPlayer || vicPlayer || bestP || worstP;
+              const { rivals, rivalsTeam, partnerStats } = INSIGHTS;
+              const rival     = rivals?.[selectedPlayer];
+              const rivalTeam = rivalsTeam?.[selectedPlayer];
+              const partners  = partnerStats?.[selectedPlayer];
+              const nemPlayer = rival?.nemesis     ? ALL_PLAYERS.find(x=>x.id===rival.nemesis)         : null;
+              const vicPlayer = rival?.victim      ? ALL_PLAYERS.find(x=>x.id===rival.victim)          : null;
+              const tNemPlayer= rivalTeam?.nemesis ? ALL_PLAYERS.find(x=>x.id===rivalTeam.nemesis)     : null;
+              const tVicPlayer= rivalTeam?.victim  ? ALL_PLAYERS.find(x=>x.id===rivalTeam.victim)      : null;
+              const bestP     = partners?.bestPartner  ? ALL_PLAYERS.find(x=>x.id===partners.bestPartner)  : null;
+              const worstP    = partners?.worstPartner ? ALL_PLAYERS.find(x=>x.id===partners.worstPartner) : null;
+              const hasAnything = nemPlayer || vicPlayer || tNemPlayer || tVicPlayer || bestP || worstP;
               if (!hasAnything) return <div style={{ color:C.muted, fontSize:12, marginTop:10 }}>Not enough data yet</div>;
 
               function StatTile({ label, player, rec, bgColor, textColor, subColor, emptyLabel }) {
@@ -2437,11 +2600,11 @@ function InsightsTab({ darkMode }) {
 
               return (
                 <div style={{ marginTop:10 }}>
-                  {/* Row 1: vs opponents */}
+                  {/* Row 1: singles opponents */}
                   {(nemPlayer || vicPlayer) && (
                     <>
                       <div style={{ color:C.muted, fontSize:9, fontWeight:700, letterSpacing:1.5, marginBottom:5 }}>SINGLES OPPONENTS</div>
-                      <div style={{ display:"flex", gap:8, marginBottom:8 }}>
+                      <div style={{ display:"flex", gap:8, marginBottom:12 }}>
                         <StatTile label="NEMESIS" player={nemPlayer} rec={rival?.nRec}
                           bgColor="#fee2e2" textColor="#991b1b" subColor="#dc2626" emptyLabel="No nemesis yet" />
                         <StatTile label="VICTIM" player={vicPlayer} rec={rival?.vRec}
@@ -2449,7 +2612,19 @@ function InsightsTab({ darkMode }) {
                       </div>
                     </>
                   )}
-                  {/* Row 2: team partners */}
+                  {/* Row 2: team format opponents */}
+                  {(tNemPlayer || tVicPlayer) && (
+                    <>
+                      <div style={{ color:C.muted, fontSize:9, fontWeight:700, letterSpacing:1.5, marginBottom:5 }}>TEAM FORMAT OPPONENTS</div>
+                      <div style={{ display:"flex", gap:8, marginBottom:12 }}>
+                        <StatTile label="NEMESIS" player={tNemPlayer} rec={rivalTeam?.nRec}
+                          bgColor="#fee2e2" textColor="#991b1b" subColor="#dc2626" emptyLabel="No nemesis yet" />
+                        <StatTile label="VICTIM" player={tVicPlayer} rec={rivalTeam?.vRec}
+                          bgColor="#dcfce7" textColor="#166534" subColor="#15803d" emptyLabel="No clear victim" />
+                      </div>
+                    </>
+                  )}
+                  {/* Row 3: team partners */}
                   {(bestP || worstP) && (
                     <>
                       <div style={{ color:C.muted, fontSize:9, fontWeight:700, letterSpacing:1.5, marginBottom:5 }}>TEAM PARTNERS (min 2 together)</div>
@@ -2923,12 +3098,24 @@ const DRAFT_SESSIONS = [
 const WORLD_PLAYERS_DRAFT   = ALL_PLAYERS.filter(p=>p.team==="world"    && !p.alumni);
 const RICHMOND_PLAYERS_DRAFT = ALL_PLAYERS.filter(p=>p.team==="richmond" && !p.alumni);
 
+// Stoney Creek 9-hole course HCs (White tees)
+const SC_SHA_HC = {
+  rk:3,ss:7,jh:11,na:3,tg:8,bs:7,fs:7,kb:8,
+  jc:6,cd:10,sn:6,jp:10,tp:5,ah:12,jr:13,bb:6
+};
+const SC_TUCK_HC = {
+  rk:3,ss:7,jh:11,na:2,tg:8,bs:7,fs:7,kb:8,
+  jc:6,cd:10,sn:5,jp:10,tp:5,ah:12,jr:13,bb:5
+};
+
 function draftGetHCByTee(id, tee) {
   const p = ALL_PLAYERS.find(x=>x.id===id);
   if (!p) return 0;
-  if (tee==="red")  return p.hcR ?? p.hcG ?? p.hc ?? 0;
-  if (tee==="gold") return p.hcG ?? p.hc ?? 0;
-  if (tee==="blue") return p.hcB ?? p.hc ?? 0;
+  if (tee==="sc_sha")  return SC_SHA_HC[id] ?? p.hcW ?? p.hc ?? 0;
+  if (tee==="sc_tuck") return SC_TUCK_HC[id] ?? p.hcW ?? p.hc ?? 0;
+  if (tee==="red")     return p.hcR ?? p.hcG ?? p.hc ?? 0;
+  if (tee==="gold")    return p.hcG ?? p.hc ?? 0;
+  if (tee==="blue")    return p.hcB ?? p.hc ?? 0;
   return p.hcW ?? p.hc ?? 0;
 }
 
@@ -3048,7 +3235,8 @@ function DraftRoom({ darkMode }) {
     try {
       const rows = singles.map((m,i) => {
         const matchId = SINGLES_MATCH_IDS[i];
-        const diff = draftGetHCByTee(m.world,"white") - draftGetHCByTee(m.richmond,"white");
+        const tee = i < 8 ? "sc_sha" : "sc_tuck";
+        const diff = draftGetHCByTee(m.world, tee) - draftGetHCByTee(m.richmond, tee);
         const strokes = Math.min(Math.abs(diff), 9);
         const strokes_to = diff>0?"world":diff<0?"richmond":"none";
         return { id:matchId, world:[m.world], richmond:[m.richmond], strokes, strokes_to };
@@ -3291,7 +3479,8 @@ function DraftRoom({ darkMode }) {
                   const wp=ALL_PLAYERS.find(x=>x.id===m.world); const rp=ALL_PLAYERS.find(x=>x.id===m.richmond);
                   const wn=wp?wp.name.split(' ')[0][0]+'. '+wp.name.split(' ')[1]:m.world;
                   const rn=rp?rp.name.split(' ')[0][0]+'. '+rp.name.split(' ')[1]:m.richmond;
-                  const diff=draftGetHCByTee(m.world,"white")-draftGetHCByTee(m.richmond,"white");
+                  const idx=singles.indexOf(m); const stee=idx<8?"sc_sha":"sc_tuck";
+                  const diff=draftGetHCByTee(m.world,stee)-draftGetHCByTee(m.richmond,stee);
                   const s=Math.min(Math.abs(diff),9); const st=diff>0?"world":diff<0?"richmond":"none";
                   return (
                     <div key={i} style={{ display:"grid", gridTemplateColumns:"1fr 1fr", padding:"8px 0",
@@ -3733,8 +3922,8 @@ export default function FallCupApp() {
     "Session 2":"Session 2 · Mod. Alt Shot · Gold Tees",
     "Session 3":"Session 3 · Texas Scramble · White Tees",
     "Session 4":"Session 4 · Captain's Choice · Red Tees",
-    "Session 5":"Session 5 · Singles · Stoney Creek",
-    "Session 6":"Session 6 · Singles · Stoney Creek",
+    "Session 5":"Session 5 · Singles · Shamokin (Front 9)",
+    "Session 6":"Session 6 · Singles · Tuckahoe (Back 9)",
   };
   const grouped = filtered.reduce((acc,m) => {
     const key = m.session || `${m.day} · ${m.round}`;
