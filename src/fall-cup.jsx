@@ -1224,7 +1224,8 @@ function StatsTab({ matches }) {
           </span>
         );
       }},
-    { key:"hc",     label:"HC",     w:"32px", color:()=>C.muted },
+    { key:"id",     label:"GRINT",  w:"42px", color:()=>C.muted,
+      format:(_,r) => { const USGA={rk:6.7,ss:14.8,jh:20.6,na:6.0,tg:16.0,bs:13.5,fs:14.1,kb:16.9,jc:13.0,cd:19.5,sn:11.5,jp:19.4,tp:10.0,ah:24.0,jr:25.0,bb:11.5}; return USGA[r.id]??r.hc; }},
     { key:"wins",   label:"W",      w:"30px", color:v=>v>0?"#15803d":C.muted },
     { key:"halved", label:"H",      w:"30px", color:v=>v>0?"#d97706":C.muted },
     { key:"losses", label:"L",      w:"30px", color:v=>v>0?"#dc2626":C.muted },
