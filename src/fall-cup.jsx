@@ -3425,7 +3425,7 @@ function DraftRoom({ darkMode }) {
               style={{ padding:"5px 12px", borderRadius:20, border:"1px solid rgba(255,255,255,0.2)",
                 background:"transparent", color:"rgba(255,255,255,0.6)", fontSize:10, fontWeight:700,
                 cursor:"pointer", letterSpacing:1 }}>
-              {layout==="mobile" ? "⊞ Desktop" : "☰ Mobile"}
+              {layout==="mobile" ? "[ ] Desktop" : "= Mobile"}
             </button>
           </div>
         </div>
