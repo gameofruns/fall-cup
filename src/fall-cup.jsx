@@ -3493,6 +3493,7 @@ function DraftRoom({ darkMode }) {
                 })}
               </div>
             </div>
+            </div>
           </div>
 
           {/* Singles matchups board */}
@@ -3764,6 +3765,7 @@ function DraftRoom({ darkMode }) {
               ✓ Pairings saved! The main app is now updated.
             </div>
           )}
+          </div>
           </div>
         </div>
         </React.Fragment>
