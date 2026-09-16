@@ -3766,7 +3766,7 @@ function DraftRoom({ darkMode }) {
             </div>
           )}
           </div>
-          </div>
+        </div>
         </div>
         </>
         )}
