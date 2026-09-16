@@ -3088,6 +3088,44 @@ function Header({ totals, year, darkMode, onToggleDark, expanded, onToggleExpand
 }
 
 
+// ── OFFLINE QUEUE ─────────────────────────────────────────────────────────────
+const QUEUE_KEY = "fallcup_pending_saves";
+
+function queueSave(matchId, holes) {
+  // Always save to localStorage first
+  try {
+    const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || "{}");
+    queue[matchId] = { holes, ts: Date.now() };
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+  } catch(e) {}
+  // Try Supabase immediately
+  flushQueue();
+}
+
+async function flushQueue() {
+  let queue;
+  try { queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || "{}"); } catch(e) { return; }
+  const ids = Object.keys(queue);
+  if (!ids.length) return;
+  for (const matchId of ids) {
+    try {
+      await supabase.saveHoles(matchId, queue[matchId].holes);
+      // Success — remove from queue
+      const q = JSON.parse(localStorage.getItem(QUEUE_KEY) || "{}");
+      delete q[matchId];
+      localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
+    } catch(e) {
+      // Failed — leave in queue for next retry
+    }
+  }
+}
+
+function getPendingCount() {
+  try { return Object.keys(JSON.parse(localStorage.getItem(QUEUE_KEY) || "{}")).length; }
+  catch(e) { return 0; }
+}
+
+
 // ── DRAFT ROOM ────────────────────────────────────────────────────────────────
 const DRAFT_SESSIONS = [
   { id:"s1", label:"Session 1", format:"Captain\'s Choice",  tee:"white", fmtKey:"captains", day:"Friday",  matchIds:["26m1a","26m1b","26m1c","26m1d"] },
@@ -3141,6 +3179,7 @@ function DraftRoom({ darkMode }) {
   const [pinError, setPinError] = useState(false);
   const [draftDay, setDraftDay] = useState("day1"); // "day1" | "day2"
   const [viewOnly, setViewOnly] = useState(false);
+  const [layout, setLayout] = useState("mobile"); // "mobile" | "desktop"
 
   // Day 1 draft state
   const [draft, setDraft] = useState({ s1:[], s2:[], s3:[], s4:[] });
@@ -3372,7 +3411,7 @@ function DraftRoom({ darkMode }) {
             borderRadius:6, padding:"3px 10px", marginTop:4, fontSize:10, color:"#f5be00", fontWeight:700, letterSpacing:1 }}>
             👁 VIEW ONLY · UPDATES EVERY 5s
           </div>}
-          <div style={{ display:"flex", gap:8, marginTop:10 }}>
+          <div style={{ display:"flex", gap:8, marginTop:10, alignItems:"center" }}>
             {[{id:"day1",label:"Day 1 · Team Formats"},{id:"day2",label:"Day 2 · Singles"}].map(d=>(
               <button key={d.id} onClick={()=>setDraftDay(d.id)}
                 style={{ padding:"6px 16px", borderRadius:20, border:"none", cursor:"pointer",
@@ -3381,6 +3420,13 @@ function DraftRoom({ darkMode }) {
                 {d.label}
               </button>
             ))}
+            <div style={{ flex:1 }}/>
+            <button onClick={()=>setLayout(l=>l==="mobile"?"desktop":"mobile")}
+              style={{ padding:"5px 12px", borderRadius:20, border:"1px solid rgba(255,255,255,0.2)",
+                background:"transparent", color:"rgba(255,255,255,0.6)", fontSize:10, fontWeight:700,
+                cursor:"pointer", letterSpacing:1 }}>
+              {layout==="mobile" ? "⊞ Desktop" : "☰ Mobile"}
+            </button>
           </div>
         </div>
         {saved && <div style={{ background:"#15803d", color:"white", borderRadius:8, padding:"10px 20px", fontWeight:700 }}>
@@ -3392,10 +3438,12 @@ function DraftRoom({ darkMode }) {
 
         {draftDay==="day2" ? (
         /* ── DAY 2 SINGLES DRAFT ── */
-        <div style={{ width:"100%", overflowY:"auto" }}>
-          {/* Singles player pool — sticky horizontal */}
-          <div style={{ position:"sticky", top:0, zIndex:10, background:C.card,
-            borderBottom:`1px solid ${C.border}`, padding:"10px 16px" }}>
+        <div style={{ width:"100%", overflowY:"auto", display:"flex", flexDirection:layout==="desktop"?"row":"column" }}>
+          {/* Singles player pool — layout aware */}
+          <div style={layout==="desktop"
+            ? { width:280, background:C.card, borderRight:`1px solid ${C.border}`, overflowY:"auto", flexShrink:0 }
+            : { position:"sticky", top:0, zIndex:10, background:C.card, borderBottom:`1px solid ${C.border}` }}>
+            <div style={{ padding:"10px 16px" }}>
             <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:8 }}>
               <div style={{ flex:1, textAlign:"center", padding:"6px 4px", borderRadius:8,
                 background:singlesPickingTeam==="world"?C.worldBg:"transparent",
@@ -3527,66 +3575,102 @@ function DraftRoom({ darkMode }) {
         /* ── DAY 1 TEAM DRAFT ── */
         <React.Fragment>
         {/* Left — player pools */}
-        <div style={{ width:"100%", overflowY:"auto" }}>
-          {/* Now picking banner — sticky at top */}
-          <div style={{ position:"sticky", top:0, zIndex:10, background:C.card,
-            borderBottom:`1px solid ${C.border}`, padding:"10px 16px" }}>
-            <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:8 }}>
-              <div style={{ flex:1, textAlign:"center", padding:"6px 4px", borderRadius:8,
-                background: pickingTeam==="world" ? C.worldBg : "transparent",
-                border: `2px solid ${pickingTeam==="world" ? C.worldGold : C.border}` }}>
-                <div style={{ color:C.worldGold, fontWeight:700, fontSize:12 }}>WORLD {pickingTeam==="world"?"▶":""}</div>
+        <div style={{ width:"100%", overflowY:"auto", display:"flex", flexDirection: layout==="desktop"?"row":"column" }}>
+          {/* Player pool — sticky on mobile, fixed sidebar on desktop */}
+          <div style={layout==="desktop"
+            ? { width:280, background:C.card, borderRight:`1px solid ${C.border}`, overflowY:"auto", flexShrink:0 }
+            : { position:"sticky", top:0, zIndex:10, background:C.card, borderBottom:`1px solid ${C.border}` }}>
+            <div style={{ padding:"10px 16px" }}>
+              <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:8 }}>
+                <div style={{ flex:1, textAlign:"center", padding:"6px 4px", borderRadius:8,
+                  background: pickingTeam==="world" ? C.worldBg : "transparent",
+                  border: `2px solid ${pickingTeam==="world" ? C.worldGold : C.border}` }}>
+                  <div style={{ color:C.worldGold, fontWeight:700, fontSize:12 }}>WORLD {pickingTeam==="world"?"▶":""}</div>
+                </div>
+                <div style={{ flex:1, textAlign:"center", padding:"6px 4px", borderRadius:8,
+                  background: pickingTeam==="richmond" ? C.richBg : "transparent",
+                  border: `2px solid ${pickingTeam==="richmond" ? C.richLight : C.border}` }}>
+                  <div style={{ color:C.richLight, fontWeight:700, fontSize:12 }}>RICHMOND {pickingTeam==="richmond"?"▶":""}</div>
+                </div>
+                <button onClick={()=>setFirstPick(p=>p==="world"?"richmond":"world")}
+                  style={{ padding:"6px 10px", borderRadius:6, border:`1px solid ${C.border}`,
+                    background:"transparent", color:C.muted, fontSize:10, cursor:"pointer", flexShrink:0 }}>
+                  Swap
+                </button>
               </div>
-              <div style={{ flex:1, textAlign:"center", padding:"6px 4px", borderRadius:8,
-                background: pickingTeam==="richmond" ? C.richBg : "transparent",
-                border: `2px solid ${pickingTeam==="richmond" ? C.richLight : C.border}` }}>
-                <div style={{ color:C.richLight, fontWeight:700, fontSize:12 }}>RICHMOND {pickingTeam==="richmond"?"▶":""}</div>
-              </div>
-              <button onClick={()=>setFirstPick(p=>p==="world"?"richmond":"world")}
-                style={{ padding:"6px 10px", borderRadius:6, border:`1px solid ${C.border}`,
-                  background:"transparent", color:C.muted, fontSize:10, cursor:"pointer", flexShrink:0 }}>
-                Swap
-              </button>
-            </div>
-            {/* Player pools — horizontal scrollable rows */}
-            <div style={{ marginBottom:6 }}>
-              <div style={{ color:C.worldGold, fontSize:9, fontWeight:700, letterSpacing:2, marginBottom:4 }}>WORLD — TAP TO PICK</div>
-              <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:4, scrollbarWidth:"none" }}>
-                {WORLD_PLAYERS_DRAFT.map(p=>{
-                  const inUse=used.world.has(p.id), selected=selectedWorld.includes(p.id);
-                  return <button key={p.id} onClick={()=>!inUse&&togglePlayer("world",p.id)}
-                    style={{ flexShrink:0, padding:"6px 12px", borderRadius:20,
-                      border:`2px solid ${selected?C.worldGold:inUse?"transparent":C.border}`,
-                      background:selected?C.worldBg:inUse?C.cardAlt:"transparent",
-                      color:inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
-                      fontSize:12, fontWeight:selected?700:500, opacity:inUse?0.4:1,
-                      whiteSpace:"nowrap" }}>
-                    {p.name} <span style={{color:C.muted,fontSize:10}}>({p.hc})</span>
-                  </button>;
-                })}
-              </div>
-            </div>
-            <div>
-              <div style={{ color:C.richLight, fontSize:9, fontWeight:700, letterSpacing:2, marginBottom:4 }}>RICHMOND — TAP TO PICK</div>
-              <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:4, scrollbarWidth:"none" }}>
-                {RICHMOND_PLAYERS_DRAFT.map(p=>{
-                  const inUse=used.richmond.has(p.id), selected=selectedRichmond.includes(p.id);
-                  return <button key={p.id} onClick={()=>!inUse&&togglePlayer("richmond",p.id)}
-                    style={{ flexShrink:0, padding:"6px 12px", borderRadius:20,
-                      border:`2px solid ${selected?C.richLight:inUse?"transparent":C.border}`,
-                      background:selected?C.richBg:inUse?C.cardAlt:"transparent",
-                      color:inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
-                      fontSize:12, fontWeight:selected?700:500, opacity:inUse?0.4:1,
-                      whiteSpace:"nowrap" }}>
-                    {p.name} <span style={{color:C.muted,fontSize:10}}>({p.hc})</span>
-                  </button>;
-                })}
-              </div>
+
+              {layout==="desktop" ? (
+                /* Desktop: vertical list */
+                <>
+                  <div style={{ color:C.worldGold, fontSize:9, fontWeight:700, letterSpacing:2, marginBottom:6 }}>TEAM WORLD</div>
+                  {WORLD_PLAYERS_DRAFT.map(p=>{
+                    const inUse=used.world.has(p.id), selected=selectedWorld.includes(p.id);
+                    return <button key={p.id} onClick={()=>!inUse&&togglePlayer("world",p.id)}
+                      style={{ width:"100%", padding:"8px 10px", marginBottom:4, borderRadius:8,
+                        border:`2px solid ${selected?C.worldGold:inUse?C.border:"transparent"}`,
+                        background:selected?C.worldBg:C.cardAlt, color:inUse?C.muted:C.text,
+                        cursor:inUse?"not-allowed":"pointer", display:"flex", justifyContent:"space-between",
+                        alignItems:"center", opacity:inUse?0.4:1 }}>
+                      <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
+                      <span style={{ fontSize:11, color:C.muted }}>HC {p.hc}</span>
+                    </button>;
+                  })}
+                  <div style={{ color:C.richLight, fontSize:9, fontWeight:700, letterSpacing:2, marginBottom:6, marginTop:10 }}>TEAM RICHMOND</div>
+                  {RICHMOND_PLAYERS_DRAFT.map(p=>{
+                    const inUse=used.richmond.has(p.id), selected=selectedRichmond.includes(p.id);
+                    return <button key={p.id} onClick={()=>!inUse&&togglePlayer("richmond",p.id)}
+                      style={{ width:"100%", padding:"8px 10px", marginBottom:4, borderRadius:8,
+                        border:`2px solid ${selected?C.richLight:inUse?C.border:"transparent"}`,
+                        background:selected?C.richBg:C.cardAlt, color:inUse?C.muted:C.text,
+                        cursor:inUse?"not-allowed":"pointer", display:"flex", justifyContent:"space-between",
+                        alignItems:"center", opacity:inUse?0.4:1 }}>
+                      <span style={{ fontWeight:600, fontSize:13 }}>{p.name}</span>
+                      <span style={{ fontSize:11, color:C.muted }}>HC {p.hc}</span>
+                    </button>;
+                  })}
+                </>
+              ) : (
+                /* Mobile: horizontal scrollable chips */
+                <>
+                  <div style={{ marginBottom:6 }}>
+                    <div style={{ color:C.worldGold, fontSize:9, fontWeight:700, letterSpacing:2, marginBottom:4 }}>WORLD — TAP TO PICK</div>
+                    <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:4, scrollbarWidth:"none" }}>
+                      {WORLD_PLAYERS_DRAFT.map(p=>{
+                        const inUse=used.world.has(p.id), selected=selectedWorld.includes(p.id);
+                        return <button key={p.id} onClick={()=>!inUse&&togglePlayer("world",p.id)}
+                          style={{ flexShrink:0, padding:"6px 12px", borderRadius:20,
+                            border:`2px solid ${selected?C.worldGold:inUse?"transparent":C.border}`,
+                            background:selected?C.worldBg:inUse?C.cardAlt:"transparent",
+                            color:inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
+                            fontSize:12, fontWeight:selected?700:500, opacity:inUse?0.4:1, whiteSpace:"nowrap" }}>
+                          {p.name} <span style={{color:C.muted,fontSize:10}}>({p.hc})</span>
+                        </button>;
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ color:C.richLight, fontSize:9, fontWeight:700, letterSpacing:2, marginBottom:4 }}>RICHMOND — TAP TO PICK</div>
+                    <div style={{ display:"flex", gap:6, overflowX:"auto", paddingBottom:4, scrollbarWidth:"none" }}>
+                      {RICHMOND_PLAYERS_DRAFT.map(p=>{
+                        const inUse=used.richmond.has(p.id), selected=selectedRichmond.includes(p.id);
+                        return <button key={p.id} onClick={()=>!inUse&&togglePlayer("richmond",p.id)}
+                          style={{ flexShrink:0, padding:"6px 12px", borderRadius:20,
+                            border:`2px solid ${selected?C.richLight:inUse?"transparent":C.border}`,
+                            background:selected?C.richBg:inUse?C.cardAlt:"transparent",
+                            color:inUse?C.muted:C.text, cursor:inUse?"not-allowed":"pointer",
+                            fontSize:12, fontWeight:selected?700:500, opacity:inUse?0.4:1, whiteSpace:"nowrap" }}>
+                          {p.name} <span style={{color:C.muted,fontSize:10}}>({p.hc})</span>
+                        </button>;
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Sessions board — vertical stack */}
-          <div style={{ padding:"12px 16px" }}>
+          {/* Sessions board */}
+          <div style={{ flex:1, overflowY:"auto", padding:"12px 16px" }}>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))", gap:12, marginBottom:16 }}>
             {DRAFT_SESSIONS.map(sess=>{
               const matches = draft[sess.id]||[];
@@ -3711,23 +3795,56 @@ function CountdownDivider() {
     lineHeight:1, paddingBottom:18, alignSelf:"flex-end" }}>:</div>;
 }
 
-function Countdown({ darkMode, onEnter }) {
+function Countdown({ darkMode, onEnter, allMatchesComplete }) {
   const [timeLeft, setTimeLeft] = useState(null);
+  const [phase, setPhase] = useState("pre"); // "pre" | "live" | "post"
+  const [finalScore, setFinalScore] = useState(null);
 
   useEffect(() => {
     function calc() {
-      const diff = EVENT_DATE - new Date();
-      if (diff <= 0) return setTimeLeft(null);
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      setTimeLeft({ d, h, m, s });
+      const now = new Date();
+      if (allMatchesComplete) { setPhase("post"); setTimeLeft(null); }
+      else if (now >= EVENT_DATE) { setPhase("live"); setTimeLeft(null); }
+      else {
+        setPhase("pre");
+        const diff = EVENT_DATE - now;
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        setTimeLeft({ d, h, m, s });
+      }
     }
     calc();
     const id = setInterval(calc, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [allMatchesComplete]);
+
+  // Fetch final score from Supabase when in post phase
+  useEffect(() => {
+    if (phase !== "post") return;
+    async function fetchScore() {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/match_holes?select=id,holes`,
+          { headers: { apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}` } }
+        );
+        const rows = await res.json();
+        if (!Array.isArray(rows)) return;
+        let world = 0, richmond = 0;
+        for (const row of rows) {
+          const holes = row.holes || [];
+          const wPts = holes.filter(h=>h==="world").length + holes.filter(h=>h==="halved").length * 0.5;
+          const rPts = holes.filter(h=>h==="richmond").length + holes.filter(h=>h==="halved").length * 0.5;
+          world += wPts > rPts ? 1 : wPts === rPts && wPts > 0 ? 0.5 : 0;
+          richmond += rPts > wPts ? 1 : rPts === wPts && rPts > 0 ? 0.5 : 0;
+        }
+        const winner = world > richmond ? "world" : richmond > world ? "richmond" : "tied";
+        setFinalScore({ world, richmond, winner });
+      } catch(e) {}
+    }
+    fetchScore();
+  }, [phase]);
 
   const bg = darkMode
     ? "linear-gradient(160deg, #041a1f 0%, #062a30 50%, #0a1628 100%)"
@@ -3752,12 +3869,11 @@ function Countdown({ darkMode, onEnter }) {
         marginBottom:-20, marginTop:-60, position:"relative", zIndex:1, flexShrink:0,
       }} />
 
-      {/* Countdown — overlaps logo base, dark teal pill */}
-      {timeLeft && (
+      {/* PRE-EVENT: Countdown clock */}
+      {phase==="pre" && timeLeft && (
         <div style={{
           position:"relative", zIndex:2, marginBottom:24, textAlign:"center",
-          background:"#0d4a3a", borderRadius:14,
-          padding:"10px 18px 10px",
+          background:"#0d4a3a", borderRadius:14, padding:"10px 18px 10px",
           boxShadow:"0 4px 24px rgba(13,74,58,0.35)",
         }}>
           <div style={{ fontSize:8, fontWeight:700, letterSpacing:3,
@@ -3790,6 +3906,58 @@ function Countdown({ darkMode, onEnter }) {
         </div>
       )}
 
+      {/* LIVE: Pulsing indicator */}
+      {phase==="live" && (
+        <div style={{
+          position:"relative", zIndex:2, marginBottom:24, textAlign:"center",
+          background:"#0d4a3a", borderRadius:14, padding:"12px 28px",
+          boxShadow:"0 4px 24px rgba(13,74,58,0.35)",
+          display:"flex", alignItems:"center", gap:10,
+        }}>
+          <div style={{
+            width:10, height:10, borderRadius:"50%", background:"#22c55e",
+            boxShadow:"0 0 8px #22c55e",
+            animation:"pulse 1.5s ease-in-out infinite",
+          }}/>
+          <style>{`@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }`}</style>
+          <span style={{ fontSize:13, fontWeight:800, letterSpacing:3, color:"#fff", textTransform:"uppercase" }}>
+            Live Now
+          </span>
+        </div>
+      )}
+
+      {/* POST-EVENT: Final score */}
+      {phase==="post" && (
+        <div style={{
+          position:"relative", zIndex:2, marginBottom:24, textAlign:"center",
+          background:"#0d4a3a", borderRadius:14, padding:"14px 24px",
+          boxShadow:"0 4px 24px rgba(13,74,58,0.35)",
+        }}>
+          <div style={{ fontSize:8, fontWeight:700, letterSpacing:3,
+            color:"rgba(255,255,255,0.5)", marginBottom:8, textTransform:"uppercase" }}>
+            Fall Cup X · Final Score
+          </div>
+          {finalScore ? (<>
+            <div style={{ display:"flex", alignItems:"center", gap:12, justifyContent:"center", marginBottom:6 }}>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:11, fontWeight:700, letterSpacing:2, color:"#e6a800" }}>WORLD</div>
+                <div style={{ fontSize:40, fontWeight:900, color:"#e6a800", lineHeight:1 }}>{finalScore.world}</div>
+              </div>
+              <div style={{ color:"rgba(255,255,255,0.3)", fontSize:20 }}>—</div>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:11, fontWeight:700, letterSpacing:2, color:"#4a90d9" }}>RICHMOND</div>
+                <div style={{ fontSize:40, fontWeight:900, color:"#4a90d9", lineHeight:1 }}>{finalScore.richmond}</div>
+              </div>
+            </div>
+            <div style={{ fontSize:12, fontWeight:800, letterSpacing:2, color:"#fff", textTransform:"uppercase" }}>
+              {finalScore.winner==="world" ? "🏆 World Wins" : finalScore.winner==="richmond" ? "🏆 Richmond Wins" : "Draw"}
+            </div>
+          </>) : (
+            <div style={{ color:"rgba(255,255,255,0.5)", fontSize:12 }}>Loading results...</div>
+          )}
+        </div>
+      )}
+
       {/* Enter button */}
       <button onClick={onEnter} style={{
         background:"#0d4a3a", border:"none",
@@ -3817,6 +3985,19 @@ function Countdown({ darkMode, onEnter }) {
 export default function FallCupApp() {
   const [darkMode, setDarkMode] = useState(false);
   const [scoreBannerExpanded, setScoreBannerExpanded] = useState(true);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  // Retry queue every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      flushQueue();
+      setPendingCount(getPendingCount());
+    }, 30000);
+    // Also flush on app focus (returning from background)
+    const onFocus = () => { flushQueue(); setPendingCount(getPendingCount()); };
+    window.addEventListener("focus", onFocus);
+    return () => { clearInterval(interval); window.removeEventListener("focus", onFocus); };
+  }, []);
   // Sync module-level C so all components pick it up on re-render
   C = makeColors(darkMode);
 
@@ -3907,7 +4088,7 @@ export default function FallCupApp() {
   const isDraftMode = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("mode") === "draft";
   if (isDraftMode) return <DraftRoom darkMode={darkMode} />;
 
-  if (showLanding) return <Countdown darkMode={darkMode} onEnter={() => setShowLanding(false)} />;
+  if (showLanding) return <Countdown darkMode={darkMode} onEnter={() => setShowLanding(false)} allMatchesComplete={activeMatches.length > 0 && activeMatches.every(m => m.holes.every(h => h !== null))} />;
 
   // Compute totals: for the currently-open match use live holes, others use saved
   const totals = getTotals(activeMatches.map(m =>
@@ -3934,8 +4115,9 @@ export default function FallCupApp() {
 
   function handleUpdate(updated) {
     setActiveMatches(ms=>ms.map(m=>m.id===updated.id?updated:m));
-    // Persist to Supabase
-    supabase.saveHoles(updated.id, updated.holes).catch(e => console.error("Save failed:", e));
+    // Save to local queue first, then attempt Supabase
+    queueSave(updated.id, updated.holes);
+    setPendingCount(getPendingCount());
   }
 
   const TABS = [
@@ -3972,6 +4154,20 @@ export default function FallCupApp() {
               <button key={d} onClick={() => setDayFilter(d)} style={{ padding:"5px 14px", borderRadius:20, border:"none", cursor:"pointer", background:dayFilter===d?C.accent:C.subtle, color:dayFilter===d?"#fff":C.muted, fontSize:12, fontWeight:700 }}>{d}</button>
             ))}
             <div style={{ flex:1 }} />
+            {pendingCount > 0 && (
+              <div style={{ display:"flex", alignItems:"center", gap:4, marginRight:8,
+                background:"rgba(217,119,6,0.12)", border:"1px solid rgba(217,119,6,0.3)",
+                borderRadius:20, padding:"3px 10px" }}>
+                <div style={{ width:6, height:6, borderRadius:"50%", background:"#d97706" }}/>
+                <span style={{ fontSize:10, fontWeight:700, color:"#d97706" }}>Syncing...</span>
+              </div>
+            )}
+            {pendingCount === 0 && unlocked && (
+              <div style={{ display:"flex", alignItems:"center", gap:4, marginRight:8 }}>
+                <div style={{ width:6, height:6, borderRadius:"50%", background:"#22c55e" }}/>
+                <span style={{ fontSize:10, color:C.muted }}>Saved</span>
+              </div>
+            )}
 <button onClick={() => unlocked ? setUnlocked(false) : setShowPinModal(true)} style={{
               padding:"5px 12px", borderRadius:20, border:`1px solid ${unlocked?C.accent:C.border}`,
               background: unlocked?"#eaf7f1":"transparent", color: unlocked?C.accent:C.muted,
