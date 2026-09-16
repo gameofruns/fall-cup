@@ -3574,7 +3574,7 @@ function DraftRoom({ darkMode }) {
           </div>
         ) : (
         /* ── DAY 1 TEAM DRAFT ── */
-        <React.Fragment>
+        <>
         {/* Left — player pools */}
         <div style={{ width:"100%", overflowY:"auto", display:"flex", flexDirection: layout==="desktop"?"row":"column" }}>
           {/* Player pool — sticky on mobile, fixed sidebar on desktop */}
@@ -3768,7 +3768,7 @@ function DraftRoom({ darkMode }) {
           </div>
           </div>
         </div>
-        </React.Fragment>
+        </>
         )}
       </div>
     </div>
