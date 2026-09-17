@@ -3765,13 +3765,13 @@ function DraftRoom({ darkMode }) {
               ✓ Pairings saved! The main app is now updated.
             </div>
           )}
-          </div>
         </div>
         </div>
         </>
         )}
       </div>
     </div>
+  </div>
   );
 }
 
