@@ -3127,6 +3127,40 @@ function getPendingCount() {
 
 
 // ── DRAFT ROOM ────────────────────────────────────────────────────────────────
+// Stoney Creek 9-hole course HCs (White tees)
+const SC_SHA_HC = {
+  rk:3,ss:7,jh:11,na:3,tg:8,bs:7,fs:7,kb:8,
+  jc:6,cd:10,sn:6,jp:10,tp:5,ah:12,jr:13,bb:6
+};
+const SC_TUCK_HC = {
+  rk:3,ss:7,jh:11,na:2,tg:8,bs:7,fs:7,kb:8,
+  jc:6,cd:10,sn:5,jp:10,tp:5,ah:12,jr:13,bb:5
+};
+
+function draftGetHCByTee(id, tee) {
+  const p = ALL_PLAYERS.find(x=>x.id===id);
+  if (!p) return 0;
+  if (tee==="sc_sha")  return SC_SHA_HC[id] ?? p.hcW ?? p.hc ?? 0;
+  if (tee==="sc_tuck") return SC_TUCK_HC[id] ?? p.hcW ?? p.hc ?? 0;
+  if (tee==="red")     return p.hcR ?? p.hcG ?? p.hc ?? 0;
+  if (tee==="gold")    return p.hcG ?? p.hc ?? 0;
+  if (tee==="blue")    return p.hcB ?? p.hc ?? 0;
+  return p.hcW ?? p.hc ?? 0;
+}
+
+function draftCalcStrokes(wIds, rIds, fmt, tee="white") {
+  function teamHC(ids) {
+    const hcs = ids.map(id=>draftGetHCByTee(id,tee)).sort((a,b)=>a-b);
+    const [lo, hi] = hcs;
+    if (fmt==="scramble")  return Math.ceil((lo+hi)/2);
+    if (fmt==="captains")  return Math.round(lo*0.5)+Math.round(hi*0.25);
+    if (fmt==="modalt")    return Math.round(lo*0.75)+Math.round(hi*0.25);
+    if (fmt==="alt")       return Math.round(lo*0.6)+Math.round(hi*0.4);
+    return lo;
+  }
+  const diff = teamHC(wIds) - teamHC(rIds);
+  return { strokes:Math.min(Math.abs(diff),9), strokesTo: diff>0?"world":diff<0?"richmond":"none" };
+}
 const DRAFT_SESSIONS = [
   { id:"s1", label:"Session 1", format:"Captain\'s Choice",  tee:"white", fmtKey:"captains", day:"Friday",  matchIds:["26m1a","26m1b","26m1c","26m1d"] },
   { id:"s2", label:"Session 2", format:"Mod. Alt Shot",       tee:"gold",  fmtKey:"modalt",   day:"Friday",  matchIds:["26m2a","26m2b","26m2c","26m2d"] },
