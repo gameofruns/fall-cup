@@ -3502,7 +3502,7 @@ function DraftRoom({ darkMode }) {
               <div style={{ padding:"12px 16px", borderBottom:`1px solid ${C.border}`, background:`${C.accent}18`,
                 display:"flex", justifyContent:"space-between" }}>
                 <div style={{ fontWeight:800, fontSize:14 }}>Day 2 Singles · Stoney Creek</div>
-                <div style={{ fontSize:11, color:C.muted }}>{singles.length}/8 matchups</div>
+                <div style={{ fontSize:11, color:C.muted }}>{`${singles.length}/8`} matchups</div>
               </div>
               {/* Header row */}
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", padding:"6px 16px",
@@ -3685,7 +3685,7 @@ function DraftRoom({ darkMode }) {
                         <div style={{ fontSize:11, color:C.muted }}>{sess.format} · {sess.tee} tees</div>
                       </div>
                       <div style={{ fontSize:11, fontWeight:700, color:isFull?"#15803d":C.muted }}>
-                        {matches.length}/4 {isFull?"✓ DONE":""}
+                        {`${matches.length}/4`} {isFull?"✓ DONE":""}
                       </div>
                     </div>
                     <div style={{ padding:"8px 12px" }}>
