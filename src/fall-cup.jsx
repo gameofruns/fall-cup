@@ -3226,7 +3226,13 @@ function DraftRoom({ darkMode, desktopMode }) {
   }
 
   useEffect(() => {
-    if (selectedWorld.length===2 && selectedRichmond.length===2) lockPairing();
+    if (selectedWorld.length===2 && selectedRichmond.length===2) {
+      const newMatch = { world:[...selectedWorld], richmond:[...selectedRichmond] };
+      setDraft(prev=>({ ...prev, [activeSession]:[...(prev[activeSession]||[]), newMatch] }));
+      setSelectedWorld([]);
+      setSelectedRichmond([]);
+      setPickingTeam(t=>t==="world"?"richmond":"world");
+    }
   }, [selectedWorld, selectedRichmond]);
 
   useEffect(() => {
